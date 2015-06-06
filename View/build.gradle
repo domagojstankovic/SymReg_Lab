@@ -1,0 +1,14 @@
+apply plugin: 'application'
+mainClassName = 'hr.fer.zemris.ecf.symreg.view.SymReg'
+
+dependencies {
+    compile project(':Model')
+}
+
+jar{
+    baseName = 'ECFLab'
+    manifest {
+        attributes 'Main-Class': 'hr.fer.zemris.ecf.symreg.view.SymReg'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

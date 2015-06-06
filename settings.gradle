@@ -1,0 +1,4 @@
+rootProject.name = 'SymReg_Lab'
+include 'Model'
+include 'View'
+
