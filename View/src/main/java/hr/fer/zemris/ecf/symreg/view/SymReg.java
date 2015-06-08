@@ -37,21 +37,26 @@ public class SymReg extends JFrame {
         setLocation(300, 100);
         setSize(400, 300);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(10, 5));
 
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-        add(leftPanel, BorderLayout.CENTER);
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setContentPane(panel);
+
+        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        List<String> functions = SupportedFunctionsFactory.getProvider().supportedFunctions();
+        checkboxPanel = new CheckboxListPanel(functions);
+        add(checkboxPanel);
+
+        terminalsetTxtFld = new JTextField("");
+        terminalsetTxtFld.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) terminalsetTxtFld.getPreferredSize().getHeight()));
+        add(terminalsetTxtFld);
 
         String startDir = ".";
         InfoService.getInstance().setLastSelectedPath(startDir);
         browsePnl = new BrowsePanel("", new File(startDir));
-        leftPanel.add(browsePnl);
-
-        terminalsetTxtFld = new JTextField("");
-        terminalsetTxtFld.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) terminalsetTxtFld.getPreferredSize().getHeight()));
-        leftPanel.add(terminalsetTxtFld);
+        add(browsePnl);
 
         runBtn = new JButton(new AbstractAction() {
             @Override
@@ -60,11 +65,9 @@ public class SymReg extends JFrame {
             }
         });
         runBtn.setText("Run");
-        leftPanel.add(runBtn);
+        add(runBtn);
 
-        List<String> functions = SupportedFunctionsFactory.getProvider().supportedFunctions();
-        checkboxPanel = new CheckboxListPanel(functions);
-        add(checkboxPanel, BorderLayout.EAST);
+        pack();
     }
 
     private void runClicked() {

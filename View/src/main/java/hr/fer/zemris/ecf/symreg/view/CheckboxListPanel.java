@@ -13,7 +13,7 @@ public class CheckboxListPanel extends JPanel {
 
     public CheckboxListPanel(List<String> txtList) {
         super();
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         for (String txt : txtList) {
             CheckboxLabelPanel box = new CheckboxLabelPanel(txt);
