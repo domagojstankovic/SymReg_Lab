@@ -123,6 +123,12 @@ public class SymReg extends JFrame implements JobListener {
         Logger logger = new FileLogger("res/log/log.txt");
         LoggerProvider.setLogger(logger);
 
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
         SwingUtilities.invokeLater(() -> new SymReg());
     }
 
