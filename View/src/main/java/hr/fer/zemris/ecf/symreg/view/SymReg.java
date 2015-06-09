@@ -4,6 +4,7 @@ import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationWriter;
 import hr.fer.zemris.ecf.lab.engine.console.Job;
+import hr.fer.zemris.ecf.lab.engine.log.ExperimentRun;
 import hr.fer.zemris.ecf.lab.engine.log.LogModel;
 import hr.fer.zemris.ecf.lab.engine.task.JobListener;
 import hr.fer.zemris.ecf.symreg.model.exp.SRManager;
@@ -13,10 +14,13 @@ import hr.fer.zemris.ecf.symreg.model.logger.Logger;
 import hr.fer.zemris.ecf.symreg.model.logger.LoggerProvider;
 import hr.fer.zemris.ecf.symreg.model.logger.impl.FileLogger;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -24,6 +28,7 @@ import java.util.List;
  */
 public class SymReg extends JFrame implements JobListener {
 
+    private static final String ICON = "line-chart.png";
     private BrowsePanel browsePnl = null;
     private JTextField terminalsetTxtFld = null;
     private CheckboxListPanel checkboxPanel = null;
@@ -87,6 +92,19 @@ public class SymReg extends JFrame implements JobListener {
 
     private void resClicked() {
         System.out.println(log);
+        ExperimentRun run = log.getRuns().get(0);
+        String hof = run.getHallOfFame();
+
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(ICON);
+        try {
+            Image image = ImageIO.read(is);
+            Icon icon = new ImageIcon(image);
+            JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION, icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+            LoggerProvider.getLogger().log(e);
+            JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION);
+        }
     }
 
     private void runClicked() {
