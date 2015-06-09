@@ -9,13 +9,13 @@ public class EcfFileProvider {
 
     public static String getEcfFile() {
         if (DetectOS.isMac()) {
-            return "mac_SRM";
+            return "exe/mac_SRM";
         }
         if (DetectOS.isWindows()) {
-            return "win_SRM.exe";
+            return "exe/win_SRM.exe";
         }
         if (DetectOS.isUnix()) {
-            return "linux_SRM";
+            return "exe/linux_SRM";
         }
         return null;
     }

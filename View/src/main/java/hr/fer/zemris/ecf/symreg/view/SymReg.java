@@ -3,6 +3,7 @@ package hr.fer.zemris.ecf.symreg.view;
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationWriter;
+import hr.fer.zemris.ecf.symreg.model.exp.SRManager;
 import hr.fer.zemris.ecf.symreg.model.info.InfoService;
 import hr.fer.zemris.ecf.symreg.model.info.SupportedFunctionsFactory;
 import hr.fer.zemris.ecf.symreg.model.logger.Logger;
@@ -74,6 +75,9 @@ public class SymReg extends JFrame {
         String terminalset = terminalsetTxtFld.getText();
         String inputFile = browsePnl.getText();
         List<String> functions = checkboxPanel.getCheckedItems();
+
+        SRManager manager = new SRManager();
+        manager.run(terminalset, inputFile, functions);
     }
 
     public static void main(String[] args) {

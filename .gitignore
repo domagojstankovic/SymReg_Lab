@@ -161,7 +161,7 @@ nb-configuration.xml
 *.com
 *.class
 *.dll
-*.exe
+#*.exe
 *.o
 *.so
 
