@@ -3,6 +3,9 @@ package hr.fer.zemris.ecf.symreg.view;
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationWriter;
+import hr.fer.zemris.ecf.lab.engine.console.Job;
+import hr.fer.zemris.ecf.lab.engine.log.LogModel;
+import hr.fer.zemris.ecf.lab.engine.task.JobListener;
 import hr.fer.zemris.ecf.symreg.model.exp.SRManager;
 import hr.fer.zemris.ecf.symreg.model.info.InfoService;
 import hr.fer.zemris.ecf.symreg.model.info.SupportedFunctionsFactory;
@@ -19,12 +22,13 @@ import java.util.List;
 /**
  * Created by Domagoj on 06/06/15.
  */
-public class SymReg extends JFrame {
+public class SymReg extends JFrame implements JobListener {
 
     private BrowsePanel browsePnl = null;
     private JTextField terminalsetTxtFld = null;
-    private JButton runBtn = null;
     private CheckboxListPanel checkboxPanel = null;
+    private ButtonsPanel btnsPanel = null;
+    private LogModel log = null;
 
     public SymReg() {
         super();
@@ -59,16 +63,30 @@ public class SymReg extends JFrame {
         browsePnl = new BrowsePanel("", new File(startDir));
         add(browsePnl);
 
-        runBtn = new JButton(new AbstractAction() {
+        JButton runBtn = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 runClicked();
             }
         });
         runBtn.setText("Run");
-        add(runBtn);
+
+        JButton resBtn = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resClicked();
+            }
+        });
+
+        btnsPanel = new ButtonsPanel(runBtn, resBtn);
+
+        add(btnsPanel);
 
         pack();
+    }
+
+    private void resClicked() {
+        System.out.println(log);
     }
 
     private void runClicked() {
@@ -76,7 +94,7 @@ public class SymReg extends JFrame {
         String inputFile = browsePnl.getText();
         List<String> functions = checkboxPanel.getCheckedItems();
 
-        SRManager manager = new SRManager();
+        SRManager manager = new SRManager(this);
         manager.run(terminalset, inputFile, functions);
     }
 
@@ -88,5 +106,30 @@ public class SymReg extends JFrame {
         LoggerProvider.setLogger(logger);
 
         SwingUtilities.invokeLater(() -> new SymReg());
+    }
+
+    @Override
+    public void jobInitialized(Job job) {
+        log = null;
+        btnsPanel.addResBtn();
+        btnsPanel.getResBtn().setText("Initialized");
+        btnsPanel.getResBtn().setEnabled(false);
+    }
+
+    @Override
+    public void jobStarted(Job job) {
+        btnsPanel.getResBtn().setText("Started");
+    }
+
+    @Override
+    public void jobFinished(Job job, LogModel logModel) {
+        btnsPanel.getResBtn().setEnabled(true);
+        btnsPanel.getResBtn().setText("Finished");
+        log = logModel;
+    }
+
+    @Override
+    public void jobFailed(Job job) {
+        btnsPanel.getResBtn().setText("Failed");
     }
 }

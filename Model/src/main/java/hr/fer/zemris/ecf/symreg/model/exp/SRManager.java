@@ -2,8 +2,6 @@ package hr.fer.zemris.ecf.symreg.model.exp;
 
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
-import hr.fer.zemris.ecf.lab.engine.console.Job;
-import hr.fer.zemris.ecf.lab.engine.log.LogModel;
 import hr.fer.zemris.ecf.lab.engine.param.Configuration;
 import hr.fer.zemris.ecf.lab.engine.param.Entry;
 import hr.fer.zemris.ecf.lab.engine.param.EntryBlock;
@@ -16,24 +14,35 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Created by Domagoj on 08/06/15.
  */
-public class SRManager implements JobListener {
+public class SRManager {
 
     public static final String CONFIG_FILE = "srm_config.xml";
     private String ecfPath = null;
+
+    private JobListener listener;
+
+    public SRManager(JobListener listener) {
+        this.listener = listener;
+    }
 
     public void run(String terminalset, String inputFile, List<String> functions) {
         Configuration conf = readConfig();
         updateConfig(conf, terminalset, inputFile, functions);
 
-        ExperimentsManager manager = new ExperimentsManager(this);
+        ExperimentsManager manager = new ExperimentsManager(listener);
 
-        String ecfPath = getEcfFilePath();
+        String ecfPath = generateECFexe();
         String confPath = generateTempConfigFile();
         int threads = 1;
         manager.runExperiment(conf, ecfPath, confPath, threads);
@@ -50,7 +59,7 @@ public class SRManager implements JobListener {
         }
     }
 
-    private String getEcfFilePath() {
+    private String generateECFexe() {
         if (ecfPath != null) {
             return ecfPath;
         }
@@ -58,7 +67,19 @@ public class SRManager implements JobListener {
         InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(filePath);
 
         try {
-            File file = File.createTempFile("ecf_srm", ".exec");
+            File file = File.createTempFile("ecf_srm", "");
+            Path path = file.toPath();
+
+            Set<PosixFilePermission> perms = new HashSet<>();
+            perms.add(PosixFilePermission.OWNER_EXECUTE);
+            perms.add(PosixFilePermission.GROUP_EXECUTE);
+            perms.add(PosixFilePermission.OTHERS_EXECUTE);
+
+            perms.add(PosixFilePermission.OWNER_WRITE);
+            perms.add(PosixFilePermission.GROUP_WRITE);
+            perms.add(PosixFilePermission.OTHERS_WRITE);
+
+            Files.setPosixFilePermissions(path, perms);
             FileUtils.copyInputStreamToFile(is, file);
             file.deleteOnExit();
             return file.getAbsolutePath();
@@ -115,7 +136,7 @@ public class SRManager implements JobListener {
                 continue;
             }
             String[] parts = line.split("\\s+");
-            num = parts.length;
+            num = parts.length - 1;
             break;
         }
 
@@ -132,25 +153,5 @@ public class SRManager implements JobListener {
         sb.deleteCharAt(sb.length() - 1);
 
         return sb.toString();
-    }
-
-    @Override
-    public void jobInitialized(Job job) {
-
-    }
-
-    @Override
-    public void jobStarted(Job job) {
-
-    }
-
-    @Override
-    public void jobFinished(Job job, LogModel logModel) {
-
-    }
-
-    @Override
-    public void jobFailed(Job job) {
-
     }
 }
