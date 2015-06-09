@@ -6,7 +6,7 @@ dependencies {
 }
 
 jar{
-    baseName = 'ECFLab'
+    baseName = 'SymReg_Lab'
     manifest {
         attributes 'Main-Class': 'hr.fer.zemris.ecf.symreg.view.SymReg'
     }
