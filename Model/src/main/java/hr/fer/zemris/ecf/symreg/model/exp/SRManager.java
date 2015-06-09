@@ -14,13 +14,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermission;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 /**
  * Created by Domagoj on 08/06/15.
@@ -68,18 +63,10 @@ public class SRManager {
 
         try {
             File file = File.createTempFile("ecf_srm", "");
-            Path path = file.toPath();
+            file.setExecutable(true, false);
+            file.setReadable(true, false);
+            file.setWritable(true, false);
 
-            Set<PosixFilePermission> perms = new HashSet<>();
-            perms.add(PosixFilePermission.OWNER_EXECUTE);
-            perms.add(PosixFilePermission.GROUP_EXECUTE);
-            perms.add(PosixFilePermission.OTHERS_EXECUTE);
-
-            perms.add(PosixFilePermission.OWNER_WRITE);
-            perms.add(PosixFilePermission.GROUP_WRITE);
-            perms.add(PosixFilePermission.OTHERS_WRITE);
-
-            Files.setPosixFilePermissions(path, perms);
             FileUtils.copyInputStreamToFile(is, file);
             file.deleteOnExit();
             return file.getAbsolutePath();
