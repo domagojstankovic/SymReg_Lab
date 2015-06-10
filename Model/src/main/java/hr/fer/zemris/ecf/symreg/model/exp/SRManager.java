@@ -2,6 +2,7 @@ package hr.fer.zemris.ecf.symreg.model.exp;
 
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
+import hr.fer.zemris.ecf.lab.engine.console.DetectOS;
 import hr.fer.zemris.ecf.lab.engine.param.Configuration;
 import hr.fer.zemris.ecf.lab.engine.param.Entry;
 import hr.fer.zemris.ecf.lab.engine.param.EntryBlock;
@@ -62,7 +63,11 @@ public class SRManager {
         InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(filePath);
 
         try {
-            File file = File.createTempFile("ecf_srm", "");
+            String suffix = "";
+            if (DetectOS.isWindows()) {
+                suffix = ".exe";
+            }
+            File file = File.createTempFile("ecf_srm", suffix);
             file.setExecutable(true, false);
             file.setReadable(true, false);
             file.setWritable(true, false);
