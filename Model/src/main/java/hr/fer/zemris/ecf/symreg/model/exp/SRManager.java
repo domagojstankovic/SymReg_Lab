@@ -32,9 +32,9 @@ public class SRManager {
         this.listener = listener;
     }
 
-    public void run(String terminalset, String inputFile, List<String> functions) {
+    public void run(String terminalset, String inputFile, List<String> functions, boolean linearScaling) {
         Configuration conf = readConfig();
-        updateConfig(conf, terminalset, inputFile, functions);
+        updateConfig(conf, terminalset, inputFile, functions, linearScaling);
 
         ExperimentsManager manager = new ExperimentsManager(listener);
 
@@ -87,7 +87,8 @@ public class SRManager {
         return reader.readArchive(is);
     }
 
-    private void updateConfig(Configuration conf, String terminalset, String inputFile, List<String> functions) {
+    private void updateConfig(Configuration conf, String terminalset, String inputFile, List<String> functions,
+                              boolean linearScaling) {
         List<EntryBlock> genotypes = conf.genotypes.get(0);
         EntryBlock treeGen = genotypes.get(0);
 
@@ -96,10 +97,12 @@ public class SRManager {
 
         EntryList registry = conf.registry;
         Entry inputfileEntry = registry.getEntryWithKey("input_file");
+        Entry linearScalingEntry = registry.getEntryWithKey("linear_scaling");
 
         functionsetEntry.value = extractFunctionset(functions);
         terminalsetEntry.value = extractInputVars(inputFile) + terminalset;
         inputfileEntry.value = inputFile;
+        linearScalingEntry.value = linearScaling ? "true" : "false";
     }
 
     private String extractInputVars(String inputFile) {

@@ -32,6 +32,7 @@ public class SymReg extends JFrame implements JobListener {
     private BrowsePanel browsePnl = null;
     private JTextField terminalsetTxtFld = null;
     private CheckboxListPanel checkboxPanel = null;
+    private JCheckBox linearScalingCheckBox = null;
     private ButtonsPanel btnsPanel = null;
     private LogModel log = null;
 
@@ -46,28 +47,37 @@ public class SymReg extends JFrame implements JobListener {
         setTitle("Symbolic regression Lab");
         setLocation(300, 100);
         setSize(400, 300);
+        setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
+        JPanel generalPanel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setContentPane(panel);
+        generalPanel.setLayout(new BorderLayout());
+        setContentPane(generalPanel);
 
-        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-
+        // Function set
+        JLabel functionSetLbl = new JLabel("Function set");
         List<String> functions = SupportedFunctionsFactory.getProvider().supportedFunctions();
         checkboxPanel = new CheckboxListPanel(functions);
-        add(checkboxPanel);
 
+        // Terminal set
+        JLabel terminalSetLbl = new JLabel("Terminal set");
         terminalsetTxtFld = new JTextField("");
-        terminalsetTxtFld.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) terminalsetTxtFld.getPreferredSize().getHeight()));
-        add(terminalsetTxtFld);
+        terminalsetTxtFld.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+            (int) terminalsetTxtFld.getPreferredSize().getHeight()));
 
+        // Linear scaling
+        JLabel linearScalingLbl = new JLabel("Linear scaling");
+        linearScalingCheckBox = new JCheckBox();
+
+        // Input file
+        JLabel inputFileLbl = new JLabel("Input file");
         String startDir = ".";
         InfoService.getInstance().setLastSelectedPath(startDir);
         browsePnl = new BrowsePanel("", new File(startDir));
-        add(browsePnl);
 
+        // Buttons
         JButton runBtn = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,7 +95,45 @@ public class SymReg extends JFrame implements JobListener {
 
         btnsPanel = new ButtonsPanel(runBtn, resBtn);
 
-        add(btnsPanel);
+        GroupLayout layout = new GroupLayout(panel);
+        panel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
+        layout.setHorizontalGroup(
+            layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(functionSetLbl)
+                .addComponent(terminalSetLbl)
+                .addComponent(linearScalingLbl)
+                .addComponent(inputFileLbl)
+            ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(checkboxPanel)
+                .addComponent(terminalsetTxtFld)
+                .addComponent(linearScalingCheckBox)
+                .addComponent(browsePnl)
+            )
+        );
+
+        layout.setVerticalGroup(
+            layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(functionSetLbl)
+                .addComponent(checkboxPanel)
+            ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(terminalSetLbl)
+                .addComponent(terminalsetTxtFld)
+            ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(linearScalingLbl)
+                .addComponent(linearScalingCheckBox)
+            ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(inputFileLbl)
+                .addComponent(browsePnl)
+            )
+        );
+
+        generalPanel.add(panel, BorderLayout.CENTER);
+        generalPanel.add(btnsPanel, BorderLayout.SOUTH);
 
         pack();
     }
@@ -109,11 +157,12 @@ public class SymReg extends JFrame implements JobListener {
 
     private void runClicked() {
         String terminalset = terminalsetTxtFld.getText();
-        String inputFile = browsePnl.getText();
+        String inputFile = browsePnl.getTextField();
         List<String> functions = checkboxPanel.getCheckedItems();
+        boolean linearScaling = linearScalingCheckBox.isSelected();
 
         SRManager manager = new SRManager(this);
-        manager.run(terminalset, inputFile, functions);
+        manager.run(terminalset, inputFile, functions, linearScaling);
     }
 
     public static void main(String[] args) {
@@ -125,7 +174,8 @@ public class SymReg extends JFrame implements JobListener {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+        } catch (ClassNotFoundException | InstantiationException |
+            UnsupportedLookAndFeelException | IllegalAccessException e) {
             e.printStackTrace();
         }
 

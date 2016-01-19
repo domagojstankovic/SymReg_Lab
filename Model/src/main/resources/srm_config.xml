@@ -26,6 +26,7 @@
 	<Entry key="log.level">3</Entry>
 	<Entry key="log.frequency">10</Entry>
 	<Entry key="batch.repeats">1</Entry>
+	<Entry key="linear_scaling">false</Entry>
   </Registry>
 </ECF>
 

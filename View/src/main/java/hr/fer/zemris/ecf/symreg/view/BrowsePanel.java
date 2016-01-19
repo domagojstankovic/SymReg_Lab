@@ -1,14 +1,9 @@
 package hr.fer.zemris.ecf.symreg.view;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  * Panel for file browsing and displaying it's path.
@@ -20,17 +15,20 @@ public class BrowsePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    private JTextField text;
+    private JTextField textField;
     private JButton button;
     private File file = null;
     private File startDir = null;
 
     public BrowsePanel(String initText) {
         super();
-        text = new JTextField(initText);
-        Dimension dim = new Dimension(200, 20);
-        text.setMinimumSize(dim);
-        text.setPreferredSize(dim);
+        textField = new JTextField(initText);
+        Dimension prefDim = textField.getPreferredSize();
+        Dimension dim = new Dimension(200, prefDim.height);
+        Dimension dim2 = new Dimension(Integer.MAX_VALUE, prefDim.height);
+        textField.setMinimumSize(dim);
+        textField.setPreferredSize(dim);
+        textField.setMaximumSize(dim2);
         button = new JButton(new AbstractAction() {
 
             private static final long serialVersionUID = 1L;
@@ -42,7 +40,7 @@ public class BrowsePanel extends JPanel {
         });
         button.setText("Browse");
 
-        add(text);
+        add(textField);
         add(button);
     }
 
@@ -66,14 +64,14 @@ public class BrowsePanel extends JPanel {
             return;
         }
         file = fc.getSelectedFile();
-        text.setText(file.getAbsolutePath());
+        textField.setText(file.getAbsolutePath());
     }
 
     /**
      * @return File path
      */
-    public String getText() {
-        return text.getText();
+    public String getTextField() {
+        return textField.getText();
     }
 
     /**
@@ -83,8 +81,8 @@ public class BrowsePanel extends JPanel {
         return file;
     }
 
-    public void setText(String text) {
-        this.text.setText(text);
+    public void setTextField(String textField) {
+        this.textField.setText(textField);
     }
 
 }
