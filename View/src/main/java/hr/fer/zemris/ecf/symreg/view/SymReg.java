@@ -139,7 +139,6 @@ public class SymReg extends JFrame implements JobListener {
     }
 
     private void resClicked() {
-        System.out.println(log);
         ExperimentRun run = log.getRuns().get(0);
         String hof = run.getHallOfFame();
 

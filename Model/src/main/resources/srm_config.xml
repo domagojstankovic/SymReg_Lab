@@ -15,6 +15,7 @@
 
   <Registry>
 	<Entry key="input_file">file.txt</Entry>
+	  <Entry key="linear_scaling">true</Entry>
 
 	<Entry key="randomizer.seed">0</Entry>
 	<Entry key="population.size">500</Entry>
@@ -26,7 +27,6 @@
 	<Entry key="log.level">3</Entry>
 	<Entry key="log.frequency">10</Entry>
 	<Entry key="batch.repeats">1</Entry>
-	<Entry key="linear_scaling">false</Entry>
   </Registry>
 </ECF>
 
