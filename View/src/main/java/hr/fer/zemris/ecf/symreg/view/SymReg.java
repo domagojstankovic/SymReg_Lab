@@ -35,6 +35,7 @@ public class SymReg extends JFrame implements JobListener {
     private JCheckBox linearScalingCheckBox = null;
     private ButtonsPanel btnsPanel = null;
     private LogModel log = null;
+    private SRManager srManager = null;
 
     public SymReg() {
         super();
@@ -93,7 +94,17 @@ public class SymReg extends JFrame implements JobListener {
             }
         });
 
-        btnsPanel = new ButtonsPanel(runBtn, resBtn);
+        JButton testBtn = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                testClicked();
+            }
+        });
+        testBtn.setText("Test");
+
+
+
+        btnsPanel = new ButtonsPanel(runBtn, resBtn, testBtn);
 
         GroupLayout layout = new GroupLayout(panel);
         panel.setLayout(layout);
@@ -138,6 +149,15 @@ public class SymReg extends JFrame implements JobListener {
         pack();
     }
 
+    private void testClicked() {
+        SRManager manager = getSrManager();
+        try {
+            manager.runTest(log);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void resClicked() {
         ExperimentRun run = log.getRuns().get(0);
         String hof = run.getHallOfFame();
@@ -160,8 +180,15 @@ public class SymReg extends JFrame implements JobListener {
         List<String> functions = checkboxPanel.getCheckedItems();
         boolean linearScaling = linearScalingCheckBox.isSelected();
 
-        SRManager manager = new SRManager(this);
+        SRManager manager = getSrManager();
         manager.run(terminalset, inputFile, functions, linearScaling);
+    }
+
+    public SRManager getSrManager() {
+        if (srManager == null) {
+            srManager = new SRManager(this);
+        }
+        return srManager;
     }
 
     public static void main(String[] args) {
@@ -199,6 +226,7 @@ public class SymReg extends JFrame implements JobListener {
         btnsPanel.getResBtn().setEnabled(true);
         btnsPanel.getResBtn().setText("Finished");
         log = logModel;
+        btnsPanel.getTestBtn().setVisible(true);
     }
 
     @Override

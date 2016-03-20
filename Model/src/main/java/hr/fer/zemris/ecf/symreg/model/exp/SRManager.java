@@ -3,6 +3,7 @@ package hr.fer.zemris.ecf.symreg.model.exp;
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
 import hr.fer.zemris.ecf.lab.engine.console.DetectOS;
+import hr.fer.zemris.ecf.lab.engine.log.LogModel;
 import hr.fer.zemris.ecf.lab.engine.param.Configuration;
 import hr.fer.zemris.ecf.lab.engine.param.Entry;
 import hr.fer.zemris.ecf.lab.engine.param.EntryBlock;
@@ -11,10 +12,7 @@ import hr.fer.zemris.ecf.lab.engine.task.ExperimentsManager;
 import hr.fer.zemris.ecf.lab.engine.task.JobListener;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,6 +23,7 @@ public class SRManager {
 
     public static final String CONFIG_FILE = "srm_config.xml";
     private String ecfPath = null;
+    private String currConfPath = null;
 
     private JobListener listener;
 
@@ -41,12 +40,32 @@ public class SRManager {
         String ecfPath = generateECFexe();
         String confPath = generateTempConfigFile();
         int threads = 1;
+        currConfPath = confPath;
         manager.runExperiment(conf, ecfPath, confPath, threads);
+    }
+
+    public void runTest(LogModel log) throws IOException, InterruptedException {
+        String hofFile = writeHofToFile(log);
+        File tempOutFile = File.createTempFile("ecf_srm_test_data_out", ".txt", new File("./"));
+        String ecfExe = generateECFexe();
+        String tempOutPath = tempOutFile.getAbsolutePath();
+        System.out.println("Test: " + ecfExe + " " + currConfPath + " " + hofFile + " " + tempOutPath);
+        ProcessRunner.runProcess(ecfExe, currConfPath, hofFile, tempOutPath);
+        tempOutFile.deleteOnExit();
+    }
+
+    private static String writeHofToFile(LogModel log) throws IOException {
+        File tempHofFile = File.createTempFile("ecf_srm-hof", ".xml", new File("./"));
+        PrintWriter pw = new PrintWriter(tempHofFile);
+        pw.print(log.getRuns().get(0).getHallOfFame());
+        pw.close();
+        tempHofFile.deleteOnExit();
+        return tempHofFile.getAbsolutePath();
     }
 
     private String generateTempConfigFile() {
         try {
-            File file = File.createTempFile("ecf_srm", ".conf");
+            File file = File.createTempFile("ecf_srm-conf", ".txt");
             file.deleteOnExit();
             return file.getAbsolutePath();
         } catch (IOException e) {
