@@ -28,209 +28,229 @@ import java.util.List;
  */
 public class SymReg extends JFrame implements JobListener {
 
-    private static final String ICON = "line-chart.png";
-    private BrowsePanel browsePnl = null;
-    private JTextField terminalsetTxtFld = null;
-    private CheckboxListPanel checkboxPanel = null;
-    private JCheckBox linearScalingCheckBox = null;
-    private ButtonsPanel btnsPanel = null;
-    private LogModel log = null;
-    private SRManager srManager = null;
+  private static final String ICON = "line-chart.png";
+  private BrowsePanel browsePnl = null;
+  private JTextField terminalsetTxtFld = null;
+  private CheckboxListPanel checkboxPanel = null;
+  private JCheckBox linearScalingCheckBox = null;
+  private ButtonsPanel btnsPanel = null;
+  private LogModel log = null;
+  private SRManager srManager = null;
 
-    public SymReg() {
-        super();
-        initGUI();
+  public SymReg() {
+    super();
+    initGUI();
 
-        setVisible(true);
-    }
+    setVisible(true);
+  }
 
-    private void initGUI() {
-        setTitle("Symbolic regression Lab");
-        setLocation(300, 100);
-        setSize(400, 300);
-        setResizable(false);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+  private void initGUI() {
+    setTitle("Symbolic regression Lab");
+    setLocation(300, 100);
+    setSize(400, 300);
+    setResizable(false);
+    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JPanel panel = new JPanel();
-        JPanel generalPanel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        generalPanel.setLayout(new BorderLayout());
-        setContentPane(generalPanel);
+    JPanel panel = new JPanel();
+    JPanel generalPanel = new JPanel();
+    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    generalPanel.setLayout(new BorderLayout());
+    setContentPane(generalPanel);
 
-        // Function set
-        JLabel functionSetLbl = new JLabel("Function set");
-        List<String> functions = SupportedFunctionsFactory.getProvider().supportedFunctions();
-        checkboxPanel = new CheckboxListPanel(functions);
+    // Function set
+    JLabel functionSetLbl = new JLabel("Function set");
+    List<String> functions = SupportedFunctionsFactory.getProvider().supportedFunctions();
+    checkboxPanel = new CheckboxListPanel(functions);
 
-        // Terminal set
-        JLabel terminalSetLbl = new JLabel("Terminal set");
-        terminalsetTxtFld = new JTextField("");
-        terminalsetTxtFld.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-            (int) terminalsetTxtFld.getPreferredSize().getHeight()));
+    // Terminal set
+    JLabel terminalSetLbl = new JLabel("Terminal set");
+    terminalsetTxtFld = new JTextField("");
+    terminalsetTxtFld.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+        (int) terminalsetTxtFld.getPreferredSize().getHeight()));
 
-        // Linear scaling
-        JLabel linearScalingLbl = new JLabel("Linear scaling");
-        linearScalingCheckBox = new JCheckBox();
+    // Linear scaling
+    JLabel linearScalingLbl = new JLabel("Linear scaling");
+    linearScalingCheckBox = new JCheckBox();
 
-        // Input file
-        JLabel inputFileLbl = new JLabel("Input file");
-        String startDir = ".";
-        InfoService.getInstance().setLastSelectedPath(startDir);
-        browsePnl = new BrowsePanel("", new File(startDir));
+    // Input file
+    JLabel inputFileLbl = new JLabel("Input file");
+    String startDir = ".";
+    InfoService.getInstance().setLastSelectedPath(startDir);
+    browsePnl = new BrowsePanel("", new File(startDir));
 
-        // Buttons
-        JButton runBtn = new JButton(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                runClicked();
-            }
-        });
-        runBtn.setText("Run");
+    // Buttons
+    JButton runBtn = new JButton(new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        runClicked();
+      }
+    });
+    runBtn.setText("Run");
 
-        JButton resBtn = new JButton(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                resClicked();
-            }
-        });
+    JButton resBtn = new JButton(new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        resClicked();
+      }
+    });
 
-        JButton testBtn = new JButton(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                testClicked();
-            }
-        });
-        testBtn.setText("Test");
+    JButton testBtn = new JButton(new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        testClicked();
+      }
+    });
+    testBtn.setText("Test");
 
 
+    btnsPanel = new ButtonsPanel(runBtn, resBtn, testBtn);
 
-        btnsPanel = new ButtonsPanel(runBtn, resBtn, testBtn);
+    GroupLayout layout = new GroupLayout(panel);
+    panel.setLayout(layout);
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
 
-        GroupLayout layout = new GroupLayout(panel);
-        panel.setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
-
-        layout.setHorizontalGroup(
-            layout.createSequentialGroup()
+    layout.setHorizontalGroup(
+        layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(functionSetLbl)
                 .addComponent(terminalSetLbl)
                 .addComponent(linearScalingLbl)
                 .addComponent(inputFileLbl)
             ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(checkboxPanel)
-                .addComponent(terminalsetTxtFld)
-                .addComponent(linearScalingCheckBox)
-                .addComponent(browsePnl)
-            )
-        );
+            .addComponent(checkboxPanel)
+            .addComponent(terminalsetTxtFld)
+            .addComponent(linearScalingCheckBox)
+            .addComponent(browsePnl)
+        )
+    );
 
-        layout.setVerticalGroup(
-            layout.createSequentialGroup()
+    layout.setVerticalGroup(
+        layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addComponent(functionSetLbl)
                 .addComponent(checkboxPanel)
             ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(terminalSetLbl)
-                .addComponent(terminalsetTxtFld)
-            ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(linearScalingLbl)
-                .addComponent(linearScalingCheckBox)
-            ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(inputFileLbl)
-                .addComponent(browsePnl)
-            )
-        );
+            .addComponent(terminalSetLbl)
+            .addComponent(terminalsetTxtFld)
+        ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+            .addComponent(linearScalingLbl)
+            .addComponent(linearScalingCheckBox)
+        ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+            .addComponent(inputFileLbl)
+            .addComponent(browsePnl)
+        )
+    );
 
-        generalPanel.add(panel, BorderLayout.CENTER);
-        generalPanel.add(btnsPanel, BorderLayout.SOUTH);
+    generalPanel.add(panel, BorderLayout.CENTER);
+    generalPanel.add(btnsPanel, BorderLayout.SOUTH);
 
-        pack();
+    pack();
+  }
+
+  private void testClicked() {
+    SRManager manager = getSrManager();
+    try {
+      manager.runTest(log);
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
     }
+  }
 
-    private void testClicked() {
-        SRManager manager = getSrManager();
-        try {
-            manager.runTest(log);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+  private void resClicked() {
+    ExperimentRun run = log.getRuns().get(0);
+    String hof = extractHof(run);
+
+    InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(ICON);
+    try {
+      Image image = ImageIO.read(is);
+      Icon icon = new ImageIcon(image);
+      JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION, icon);
+    } catch (IOException e) {
+      e.printStackTrace();
+      LoggerProvider.getLogger().log(e);
+      JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION);
+    }
+  }
+
+  private static String extractHof(ExperimentRun run) {
+    if (run.getHallOfFame() != null) {
+      return run.getHallOfFame();
+    } else {
+      for (int i = run.getGenerations().size() - 1; i >= 0; i--) {
+        String hof = run.getGenerations().get(i).hallOfFame;
+        if (hof != null) {
+          return hof;
         }
+      }
+    }
+    return null;
+  }
+
+  private void runClicked() {
+    String terminalset = terminalsetTxtFld.getText();
+    String inputFile = browsePnl.getTextField();
+    List<String> functions = checkboxPanel.getCheckedItems();
+    boolean linearScaling = linearScalingCheckBox.isSelected();
+
+    SRManager manager = getSrManager();
+    manager.run(terminalset, inputFile, functions, linearScaling);
+  }
+
+  public SRManager getSrManager() {
+    if (srManager == null) {
+      srManager = new SRManager(this);
+    }
+    return srManager;
+  }
+
+  public static void main(String[] args) {
+    ConfigurationService.getInstance().setReader(new XmlConfigurationReader());
+    ConfigurationService.getInstance().setWriter(new XmlConfigurationWriter());
+
+    Logger logger = new FileLogger("res/log/log.txt");
+    LoggerProvider.setLogger(logger);
+
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (ClassNotFoundException | InstantiationException |
+        UnsupportedLookAndFeelException | IllegalAccessException e) {
+      e.printStackTrace();
     }
 
-    private void resClicked() {
-        ExperimentRun run = log.getRuns().get(0);
-        String hof = run.getHallOfFame();
+    SwingUtilities.invokeLater(() -> new SymReg());
+  }
 
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(ICON);
-        try {
-            Image image = ImageIO.read(is);
-            Icon icon = new ImageIcon(image);
-            JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION, icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-            LoggerProvider.getLogger().log(e);
-            JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION);
-        }
-    }
+  @Override
+  public void jobInitialized(Job job) {
+    log = null;
+    btnsPanel.addResBtn();
+    btnsPanel.getResBtn().setText("Initialized");
+    btnsPanel.getResBtn().setEnabled(false);
+  }
 
-    private void runClicked() {
-        String terminalset = terminalsetTxtFld.getText();
-        String inputFile = browsePnl.getTextField();
-        List<String> functions = checkboxPanel.getCheckedItems();
-        boolean linearScaling = linearScalingCheckBox.isSelected();
+  @Override
+  public void jobStarted(Job job) {
+    btnsPanel.getResBtn().setText("Started");
+  }
 
-        SRManager manager = getSrManager();
-        manager.run(terminalset, inputFile, functions, linearScaling);
-    }
+  @Override
+  public void jobPartiallyFinished(Job job, LogModel logModel) {
+    btnsPanel.getResBtn().setEnabled(true);
+    btnsPanel.getResBtn().setText("Running");
+    log = logModel;
+  }
 
-    public SRManager getSrManager() {
-        if (srManager == null) {
-            srManager = new SRManager(this);
-        }
-        return srManager;
-    }
+  @Override
+  public void jobFinished(Job job, LogModel logModel) {
+    btnsPanel.getResBtn().setEnabled(true);
+    btnsPanel.getResBtn().setText("Finished");
+    log = logModel;
+    btnsPanel.getTestBtn().setVisible(true);
+  }
 
-    public static void main(String[] args) {
-        ConfigurationService.getInstance().setReader(new XmlConfigurationReader());
-        ConfigurationService.getInstance().setWriter(new XmlConfigurationWriter());
-
-        Logger logger = new FileLogger("res/log/log.txt");
-        LoggerProvider.setLogger(logger);
-
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException |
-            UnsupportedLookAndFeelException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        SwingUtilities.invokeLater(() -> new SymReg());
-    }
-
-    @Override
-    public void jobInitialized(Job job) {
-        log = null;
-        btnsPanel.addResBtn();
-        btnsPanel.getResBtn().setText("Initialized");
-        btnsPanel.getResBtn().setEnabled(false);
-    }
-
-    @Override
-    public void jobStarted(Job job) {
-        btnsPanel.getResBtn().setText("Started");
-    }
-
-    @Override
-    public void jobFinished(Job job, LogModel logModel) {
-        btnsPanel.getResBtn().setEnabled(true);
-        btnsPanel.getResBtn().setText("Finished");
-        log = logModel;
-        btnsPanel.getTestBtn().setVisible(true);
-    }
-
-    @Override
-    public void jobFailed(Job job) {
-        btnsPanel.getResBtn().setText("Failed");
-    }
+  @Override
+  public void jobFailed(Job job) {
+    btnsPanel.getResBtn().setText("Failed");
+  }
 }

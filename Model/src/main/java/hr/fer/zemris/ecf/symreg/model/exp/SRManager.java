@@ -41,7 +41,7 @@ public class SRManager {
         String confPath = generateTempConfigFile();
         int threads = 1;
         currConfPath = confPath;
-        manager.runExperiment(conf, ecfPath, confPath, threads);
+        manager.runExperiment(conf, ecfPath, confPath, threads, true);
     }
 
     public void runTest(LogModel log) throws IOException, InterruptedException {

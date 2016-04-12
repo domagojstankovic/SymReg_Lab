@@ -1,4 +1,4 @@
 dependencies {
-    compile files('lib/Engine-1.1.jar')
+    compile files('lib/Engine-1.2.jar')
     compile 'commons-io:commons-io:2.4'
 }
