@@ -29,7 +29,8 @@ import java.util.List;
 public class SymReg extends JFrame implements JobListener {
 
   private static final String ICON = "line-chart.png";
-  private BrowsePanel browsePnl = null;
+  private BrowsePanel inputFileBrowsePnl = null;
+  private BrowsePanel errorWeightsFileBrowsePnl = null;
   private JTextField terminalsetTxtFld = null;
   private CheckboxListPanel checkboxPanel = null;
   private JCheckBox linearScalingCheckBox = null;
@@ -76,7 +77,11 @@ public class SymReg extends JFrame implements JobListener {
     JLabel inputFileLbl = new JLabel("Input file");
     String startDir = ".";
     InfoService.getInstance().setLastSelectedPath(startDir);
-    browsePnl = new BrowsePanel("", new File(startDir));
+    inputFileBrowsePnl = new BrowsePanel("", new File(startDir));
+
+    // Error weights file
+    JLabel errorWeightsFileLbl = new JLabel("Error weights file");
+    errorWeightsFileBrowsePnl = new BrowsePanel("", new File(startDir));
 
     // Buttons
     JButton runBtn = new JButton(new AbstractAction() {
@@ -117,11 +122,13 @@ public class SymReg extends JFrame implements JobListener {
                 .addComponent(terminalSetLbl)
                 .addComponent(linearScalingLbl)
                 .addComponent(inputFileLbl)
+                .addComponent(errorWeightsFileLbl)
             ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(checkboxPanel)
             .addComponent(terminalsetTxtFld)
             .addComponent(linearScalingCheckBox)
-            .addComponent(browsePnl)
+            .addComponent(inputFileBrowsePnl)
+            .addComponent(errorWeightsFileBrowsePnl)
         )
     );
 
@@ -138,7 +145,10 @@ public class SymReg extends JFrame implements JobListener {
             .addComponent(linearScalingCheckBox)
         ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
             .addComponent(inputFileLbl)
-            .addComponent(browsePnl)
+            .addComponent(inputFileBrowsePnl)
+        ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+            .addComponent(errorWeightsFileLbl)
+            .addComponent(errorWeightsFileBrowsePnl)
         )
     );
 
@@ -189,12 +199,13 @@ public class SymReg extends JFrame implements JobListener {
 
   private void runClicked() {
     String terminalset = terminalsetTxtFld.getText();
-    String inputFile = browsePnl.getTextField();
+    String inputFile = inputFileBrowsePnl.getTextField();
     List<String> functions = checkboxPanel.getCheckedItems();
     boolean linearScaling = linearScalingCheckBox.isSelected();
+    String errorWeightsFile = errorWeightsFileBrowsePnl.getTextField();
 
     SRManager manager = getSrManager();
-    manager.run(terminalset, inputFile, functions, linearScaling);
+    manager.run(terminalset, inputFile, functions, linearScaling, errorWeightsFile);
   }
 
   public SRManager getSrManager() {

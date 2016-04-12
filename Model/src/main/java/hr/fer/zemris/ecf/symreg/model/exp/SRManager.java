@@ -31,9 +31,14 @@ public class SRManager {
         this.listener = listener;
     }
 
-    public void run(String terminalset, String inputFile, List<String> functions, boolean linearScaling) {
+    public void run(String terminalset,
+                    String inputFile,
+                    List<String> functions,
+                    boolean linearScaling,
+                    String errorWeightsFile) {
+
         Configuration conf = readConfig();
-        updateConfig(conf, terminalset, inputFile, functions, linearScaling);
+        updateConfig(conf, terminalset, inputFile, functions, linearScaling, errorWeightsFile);
 
         ExperimentsManager manager = new ExperimentsManager(listener);
 
@@ -106,8 +111,13 @@ public class SRManager {
         return reader.readArchive(is);
     }
 
-    private void updateConfig(Configuration conf, String terminalset, String inputFile, List<String> functions,
-                              boolean linearScaling) {
+    private void updateConfig(Configuration conf,
+                              String terminalset,
+                              String inputFile,
+                              List<String> functions,
+                              boolean linearScaling,
+                              String errorWeightsFile) {
+
         List<EntryBlock> genotypes = conf.genotypes.get(0);
         EntryBlock treeGen = genotypes.get(0);
 
@@ -122,6 +132,12 @@ public class SRManager {
         terminalsetEntry.value = extractInputVars(inputFile) + terminalset;
         inputfileEntry.value = inputFile;
         linearScalingEntry.value = linearScaling ? "true" : "false";
+
+        if (errorWeightsFile != null && !errorWeightsFile.trim().isEmpty()) {
+            // error weights file is defined
+            Entry errorWeightsFileEntry = new Entry("error_weights.file", errorWeightsFile);
+            registry.getEntryList().add(errorWeightsFileEntry);
+        }
     }
 
     private String extractInputVars(String inputFile) {
