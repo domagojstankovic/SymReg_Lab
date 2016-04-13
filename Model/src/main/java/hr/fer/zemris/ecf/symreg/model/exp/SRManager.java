@@ -35,10 +35,11 @@ public class SRManager {
                   String inputFile,
                   List<String> functions,
                   boolean linearScaling,
-                  String errorWeightsFile) {
+                  String errorWeightsFile,
+                  String errorMetric) {
 
     Configuration conf = readConfig();
-    updateConfig(conf, terminalset, inputFile, functions, linearScaling, errorWeightsFile);
+    updateConfig(conf, terminalset, inputFile, functions, linearScaling, errorWeightsFile, errorMetric);
 
     ExperimentsManager manager = new ExperimentsManager(listener);
 
@@ -116,7 +117,8 @@ public class SRManager {
                             String inputFile,
                             List<String> functions,
                             boolean linearScaling,
-                            String errorWeightsFile) {
+                            String errorWeightsFile,
+                            String errorMetric) {
 
     List<EntryBlock> genotypes = conf.genotypes.get(0);
     EntryBlock treeGen = genotypes.get(0);
@@ -137,6 +139,12 @@ public class SRManager {
       // error weights file is defined
       Entry errorWeightsFileEntry = new Entry("error_weights.file", errorWeightsFile);
       registry.getEntryList().add(errorWeightsFileEntry);
+    }
+
+    if (errorMetric != null) {
+      // add error metric parameter
+      Entry errorMetricEntry = new Entry("error_metric", errorMetric);
+      registry.getEntryList().add(errorMetricEntry);
     }
   }
 
@@ -175,6 +183,10 @@ public class SRManager {
   }
 
   private String extractFunctionset(List<String> functions) {
+    if (functions == null || functions.isEmpty()) {
+      return "";
+    }
+
     StringBuilder sb = new StringBuilder();
 
     for (String f : functions) {
