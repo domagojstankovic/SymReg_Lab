@@ -14,13 +14,11 @@ import hr.fer.zemris.ecf.symreg.model.logger.Logger;
 import hr.fer.zemris.ecf.symreg.model.logger.LoggerProvider;
 import hr.fer.zemris.ecf.symreg.model.logger.impl.FileLogger;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,7 +27,6 @@ import java.util.List;
  */
 public class SymReg extends JFrame implements JobListener {
 
-  private static final String ICON = "line-chart.png";
   private BrowsePanel inputFileBrowsePnl = null;
   private BrowsePanel errorWeightsFileBrowsePnl = null;
   private RadioButtonsPanel errorMetricsPanel = null;
@@ -39,6 +36,7 @@ public class SymReg extends JFrame implements JobListener {
   private ButtonsPanel btnsPanel = null;
   private LogModel log = null;
   private SRManager srManager = null;
+  private ResultsFrame resultsFrame = new ResultsFrame();
 
   public SymReg() {
     super();
@@ -186,16 +184,8 @@ public class SymReg extends JFrame implements JobListener {
     ExperimentRun run = log.getRuns().get(0);
     String hof = extractHof(run);
 
-    InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(ICON);
-    try {
-      Image image = ImageIO.read(is);
-      Icon icon = new ImageIcon(image);
-      JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION, icon);
-    } catch (IOException e) {
-      e.printStackTrace();
-      LoggerProvider.getLogger().log(e);
-      JOptionPane.showMessageDialog(this, hof, "Result", JOptionPane.OK_OPTION);
-    }
+    resultsFrame.setText(hof);
+    resultsFrame.setVisible(true);
   }
 
   private static String extractHof(ExperimentRun run) {
@@ -266,6 +256,11 @@ public class SymReg extends JFrame implements JobListener {
     btnsPanel.getResBtn().setEnabled(true);
     btnsPanel.getResBtn().setText("Running");
     log = logModel;
+
+    ExperimentRun run = log.getRuns().get(0);
+    String hof = extractHof(run);
+
+    resultsFrame.setText(hof);
   }
 
   @Override
@@ -274,6 +269,11 @@ public class SymReg extends JFrame implements JobListener {
     btnsPanel.getResBtn().setText("Finished");
     log = logModel;
     btnsPanel.getTestBtn().setVisible(true);
+
+    ExperimentRun run = log.getRuns().get(0);
+    String hof = extractHof(run);
+
+    resultsFrame.setText(hof);
   }
 
   @Override
