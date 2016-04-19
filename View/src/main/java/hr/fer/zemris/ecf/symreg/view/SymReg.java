@@ -182,7 +182,7 @@ public class SymReg extends JFrame implements JobListener {
 
   private void resClicked() {
     ExperimentRun run = log.getRuns().get(0);
-    String hof = extractHof(run);
+    String hof = resultsDisplayText(run);
 
     resultsFrame.setText(hof);
     resultsFrame.setVisible(true);
@@ -200,6 +200,28 @@ public class SymReg extends JFrame implements JobListener {
       }
     }
     return null;
+  }
+
+  private static String extractLinearScalingParams(ExperimentRun run) {
+    List<String> otherLines = run.getOtherLines();
+    for (String line : otherLines) {
+      if (line.startsWith("Linear scaling parameters:")) {
+        return line;
+      }
+    }
+    return null;
+  }
+
+  private static String resultsDisplayText(ExperimentRun run) {
+    String hof = extractHof(run);
+    String linearScalingLine = extractLinearScalingParams(run);
+    if (linearScalingLine == null) {
+      // there are no linear scaling parameters
+      return hof;
+    } else {
+      // there are linear scaling parameters
+      return hof + "\n\n" + linearScalingLine;
+    }
   }
 
   private void runClicked() {
@@ -258,7 +280,7 @@ public class SymReg extends JFrame implements JobListener {
     log = logModel;
 
     ExperimentRun run = log.getRuns().get(0);
-    String hof = extractHof(run);
+    String hof = resultsDisplayText(run);
 
     resultsFrame.setText(hof);
   }
@@ -271,7 +293,7 @@ public class SymReg extends JFrame implements JobListener {
     btnsPanel.getTestBtn().setVisible(true);
 
     ExperimentRun run = log.getRuns().get(0);
-    String hof = extractHof(run);
+    String hof = resultsDisplayText(run);
 
     resultsFrame.setText(hof);
   }
