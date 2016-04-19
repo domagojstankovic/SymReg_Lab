@@ -13,76 +13,76 @@ import java.io.File;
  */
 public class BrowsePanel extends JPanel {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private JTextField textField;
-    private JButton button;
-    private File file = null;
-    private File startDir = null;
+  private JTextField textField;
+  private JButton button;
+  private File file = null;
+  private File startDir = null;
 
-    public BrowsePanel(String initText) {
-        super();
-        textField = new JTextField(initText);
-        Dimension prefDim = textField.getPreferredSize();
-        Dimension dim = new Dimension(200, prefDim.height);
-        Dimension dim2 = new Dimension(Integer.MAX_VALUE, prefDim.height);
-        textField.setMinimumSize(dim);
-        textField.setPreferredSize(dim);
-        textField.setMaximumSize(dim2);
-        button = new JButton(new AbstractAction() {
+  public BrowsePanel(String initText) {
+    super();
+    textField = new JTextField(initText);
+    Dimension prefDim = textField.getPreferredSize();
+    Dimension dim = new Dimension(200, prefDim.height);
+    Dimension dim2 = new Dimension(Integer.MAX_VALUE, prefDim.height);
+    textField.setMinimumSize(dim);
+    textField.setPreferredSize(dim);
+    textField.setMaximumSize(dim2);
+    button = new JButton(new AbstractAction() {
 
-            private static final long serialVersionUID = 1L;
+      private static final long serialVersionUID = 1L;
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                click();
-            }
-        });
-        button.setText("Browse");
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        click();
+      }
+    });
+    button.setText("Browse");
 
-        add(textField);
-        add(button);
+    add(textField);
+    add(button);
+  }
+
+  public BrowsePanel(String initText, File currentDir) {
+    this(initText);
+    startDir = currentDir;
+  }
+
+  /**
+   * Action when "Browse" button is clicked. File chooser dialog appears.
+   */
+  protected void click() {
+    JFileChooser fc;
+    if (startDir == null) {
+      fc = new JFileChooser();
+    } else {
+      fc = new JFileChooser(startDir);
     }
-
-    public BrowsePanel(String initText, File currentDir) {
-        this(initText);
-        startDir = currentDir;
+    int retVal = fc.showDialog(this, "Choose");
+    if (retVal != JFileChooser.APPROVE_OPTION) {
+      return;
     }
+    file = fc.getSelectedFile();
+    textField.setText(file.getAbsolutePath());
+  }
 
-    /**
-     * Action when "Browse" button is clicked. File chooser dialog appears.
-     */
-    protected void click() {
-        JFileChooser fc;
-        if (startDir == null) {
-            fc = new JFileChooser();
-        } else {
-            fc = new JFileChooser(startDir);
-        }
-        int retVal = fc.showDialog(this, "Choose");
-        if (retVal != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-        file = fc.getSelectedFile();
-        textField.setText(file.getAbsolutePath());
-    }
+  /**
+   * @return File path
+   */
+  public String getTextField() {
+    return textField.getText();
+  }
 
-    /**
-     * @return File path
-     */
-    public String getTextField() {
-        return textField.getText();
-    }
+  /**
+   * @return Selected file
+   */
+  public File getFile() {
+    return file;
+  }
 
-    /**
-     * @return Selected file
-     */
-    public File getFile() {
-        return file;
-    }
-
-    public void setTextField(String textField) {
-        this.textField.setText(textField);
-    }
+  public void setTextField(String textField) {
+    this.textField.setText(textField);
+  }
 
 }
