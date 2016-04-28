@@ -3,11 +3,11 @@ package hr.fer.zemris.ecf.symreg.view;
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationWriter;
-import hr.fer.zemris.ecf.lab.engine.console.Job;
 import hr.fer.zemris.ecf.lab.engine.log.ExperimentRun;
 import hr.fer.zemris.ecf.lab.engine.log.LogModel;
-import hr.fer.zemris.ecf.lab.engine.task.JobListener;
-import hr.fer.zemris.ecf.symreg.model.exp.SRManager;
+import hr.fer.zemris.ecf.symreg.model.exp.ExperimentInput;
+import hr.fer.zemris.ecf.symreg.model.exp.ParallelExperimentsListener;
+import hr.fer.zemris.ecf.symreg.model.exp.ParallelSRManager;
 import hr.fer.zemris.ecf.symreg.model.logger.Logger;
 import hr.fer.zemris.ecf.symreg.model.logger.LoggerProvider;
 import hr.fer.zemris.ecf.symreg.model.logger.impl.FileLogger;
@@ -16,21 +16,20 @@ import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by Domagoj on 06/06/15.
  */
-public class SymReg extends JFrame implements JobListener {
+public class ParallelSymReg extends JFrame implements ParallelExperimentsListener {
 
-  private SRInputPanel inputPanel;
   private ButtonsPanel btnsPanel = null;
-  private LogModel log = null;
-  private SRManager srManager = null;
+  private List<LogModel> paretoFrontier = null;
+  private ParallelSRManager srManager = null;
   private ResultsFrame resultsFrame = new ResultsFrame();
+  private SRInputPanel panel;
 
-  public SymReg() {
+  public ParallelSymReg() {
     super();
     initGUI();
 
@@ -44,12 +43,12 @@ public class SymReg extends JFrame implements JobListener {
     setResizable(false);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-    inputPanel = new SRInputPanel();
+    panel = new SRInputPanel();
     JPanel generalPanel = new JPanel();
     generalPanel.setLayout(new BorderLayout());
     setContentPane(generalPanel);
 
-        // Buttons
+    // Buttons
     JButton runBtn = new JButton(new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -65,38 +64,33 @@ public class SymReg extends JFrame implements JobListener {
       }
     });
 
-    JButton testBtn = new JButton(new AbstractAction() {
+    JButton stopButton = new JButton(new AbstractAction("Stop") {
       @Override
       public void actionPerformed(ActionEvent e) {
-        testClicked();
+        srManager.stop();
       }
     });
-    testBtn.setText("Test");
+    btnsPanel = new ButtonsPanel(runBtn, resBtn, stopButton);
 
-
-    btnsPanel = new ButtonsPanel(runBtn, resBtn, testBtn);
-
-    generalPanel.add(inputPanel, BorderLayout.CENTER);
+    generalPanel.add(panel, BorderLayout.CENTER);
     generalPanel.add(btnsPanel, BorderLayout.SOUTH);
 
     pack();
   }
 
-  private void testClicked() {
-    SRManager manager = getSrManager();
-    try {
-      manager.runTest(log);
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
+  private void resClicked() {
+    displayResults();
+    resultsFrame.setVisible(true);
   }
 
-  private void resClicked() {
-    ExperimentRun run = log.getRuns().get(0);
-    String hof = resultsDisplayText(run);
-
-    resultsFrame.setText(hof);
-    resultsFrame.setVisible(true);
+  private void displayResults() {
+    StringBuilder sb = new StringBuilder();
+    for (LogModel log : paretoFrontier) {
+      ExperimentRun run = log.getRuns().get(0);
+      String hof = resultsDisplayText(run);
+      sb.append("*************************\n\n").append(hof).append("\n\n\n");
+    }
+    resultsFrame.setText(sb.toString());
   }
 
   private static String extractLinearScalingParams(ExperimentRun run) {
@@ -122,20 +116,21 @@ public class SymReg extends JFrame implements JobListener {
   }
 
   private void runClicked() {
-    String terminalset = inputPanel.getTerminalsetTxtFld().getText();
-    String inputFile = inputPanel.getInputFileBrowsePnl().getTextField();
-    List<String> functions = inputPanel.getCheckboxPanel().getCheckedItems();
-    boolean linearScaling = inputPanel.getLinearScalingCheckBox().isSelected();
-    String errorWeightsFile = inputPanel.getErrorWeightsFileBrowsePnl().getTextField();
-    String errorMetric = inputPanel.getErrorMetricsPanel().getSelectedValue();
+    String terminalset = panel.getTerminalsetTxtFld().getText();
+    String inputFile = panel.getInputFileBrowsePnl().getTextField();
+    List<String> functions = panel.getCheckboxPanel().getCheckedItems();
+    boolean linearScaling = panel.getLinearScalingCheckBox().isSelected();
+    String errorWeightsFile = panel.getErrorWeightsFileBrowsePnl().getTextField();
+    String errorMetric = panel.getErrorMetricsPanel().getSelectedValue();
 
-    SRManager manager = getSrManager();
-    manager.run(terminalset, inputFile, functions, linearScaling, errorWeightsFile, errorMetric);
+    ParallelSRManager manager = getSrManager();
+    manager.run(new ExperimentInput(terminalset, inputFile, functions, linearScaling, errorWeightsFile, errorMetric));
   }
 
-  public SRManager getSrManager() {
+  public ParallelSRManager getSrManager() {
     if (srManager == null) {
-      srManager = new SRManager(this);
+      int threads = Runtime.getRuntime().availableProcessors();
+      srManager = new ParallelSRManager(this, threads);
     }
     return srManager;
   }
@@ -154,49 +149,26 @@ public class SymReg extends JFrame implements JobListener {
       e.printStackTrace();
     }
 
-    SwingUtilities.invokeLater(() -> new SymReg());
+    SwingUtilities.invokeLater(() -> new ParallelSymReg());
   }
 
   @Override
-  public void jobInitialized(Job job) {
-    log = null;
+  public void experimentsStarted() {
+    paretoFrontier = null;
     btnsPanel.addResBtn();
-    btnsPanel.getResBtn().setText("Initialized");
-    btnsPanel.getResBtn().setEnabled(false);
-  }
-
-  @Override
-  public void jobStarted(Job job) {
     btnsPanel.getResBtn().setText("Started");
+    btnsPanel.getResBtn().setEnabled(false);
+    btnsPanel.getTestBtn().setVisible(true);
+    btnsPanel.getTestBtn().setEnabled(false);
   }
 
   @Override
-  public void jobPartiallyFinished(Job job, LogModel logModel) {
+  public void experimentsUpdated(List<LogModel> paretoFrontier) {
     btnsPanel.getResBtn().setEnabled(true);
     btnsPanel.getResBtn().setText("Running");
-    log = logModel;
+    btnsPanel.getTestBtn().setEnabled(true);
+    this.paretoFrontier = paretoFrontier;
 
-    ExperimentRun run = log.getRuns().get(0);
-    String hof = resultsDisplayText(run);
-
-    resultsFrame.setText(hof);
-  }
-
-  @Override
-  public void jobFinished(Job job, LogModel logModel) {
-    btnsPanel.getResBtn().setEnabled(true);
-    btnsPanel.getResBtn().setText("Finished");
-    log = logModel;
-    btnsPanel.getTestBtn().setVisible(true);
-
-    ExperimentRun run = log.getRuns().get(0);
-    String hof = resultsDisplayText(run);
-
-    resultsFrame.setText(hof);
-  }
-
-  @Override
-  public void jobFailed(Job job) {
-    btnsPanel.getResBtn().setText("Failed");
+    displayResults();
   }
 }
