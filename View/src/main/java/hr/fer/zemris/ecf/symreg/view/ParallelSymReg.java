@@ -16,7 +16,9 @@ import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Domagoj on 06/06/15.
@@ -84,10 +86,15 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
   }
 
   private void displayResults() {
-    StringBuilder sb = new StringBuilder();
+    Set<String> hofs = new HashSet<>();
     for (LogModel log : paretoFrontier) {
       ExperimentRun run = log.getRuns().get(0);
       String hof = resultsDisplayText(run);
+      hofs.add(hof);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (String hof : hofs) {
       sb.append("*************************\n\n").append(hof).append("\n\n\n");
     }
     resultsFrame.setText(sb.toString());

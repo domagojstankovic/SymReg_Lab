@@ -67,6 +67,69 @@ public class HallOfFameUtilsTest {
     assertTrue(!set.contains(log5));
   }
 
+  @Test
+  public void testExtractParetoFrontier2() throws Exception {
+    final double fit1 = 0.00884305;
+    final double fit2 = 0.00798193;
+    final double fit3 = 0.00851194;
+    final double fit4 = 0.0084911;
+    final int size1 = 12;
+    final int size2 = 16;
+    final int size3 = 35;
+    final int size4 = 36;
+
+    LogModel log11 = generateLog(fit1, size1);
+    LogModel log12 = generateLog(fit1, size1);
+    LogModel log13 = generateLog(fit1, size1);
+
+    LogModel log21 = generateLog(fit2, size2);
+    LogModel log22 = generateLog(fit2, size2);
+    LogModel log23 = generateLog(fit2, size2);
+    LogModel log24 = generateLog(fit2, size2);
+
+    LogModel log31 = generateLog(fit3, size3);
+    LogModel log32 = generateLog(fit3, size3);
+
+    LogModel log41 = generateLog(fit4, size4);
+    LogModel log42 = generateLog(fit4, size4);
+    LogModel log43 = generateLog(fit4, size4);
+    LogModel log44 = generateLog(fit4, size4);
+    LogModel log45 = generateLog(fit4, size4);
+    LogModel log46 = generateLog(fit4, size4);
+
+    List<LogModel> logs = new ArrayList<>();
+    logs.add(log11);
+    logs.add(log12);
+    logs.add(log13);
+    logs.add(log21);
+    logs.add(log22);
+    logs.add(log23);
+    logs.add(log24);
+    logs.add(log31);
+    logs.add(log32);
+    logs.add(log41);
+    logs.add(log42);
+    logs.add(log43);
+    logs.add(log44);
+    logs.add(log45);
+    logs.add(log46);
+    List<FitnessSizeLog> filtered = HallOfFameUtils.extractParetoFrontier(logs);
+
+    assertTrue(filtered.size() == 4 + 3);
+    Set<LogModel> set = new HashSet<>();
+    for (FitnessSizeLog fitnessSizeLog : filtered) {
+      set.add(fitnessSizeLog.logModel);
+    }
+
+    assertTrue(set.contains(log11));
+    assertTrue(set.contains(log12));
+    assertTrue(set.contains(log13));
+    assertTrue(set.contains(log21));
+    assertTrue(set.contains(log22));
+    assertTrue(set.contains(log23));
+    assertTrue(set.contains(log24));
+  }
+
   private static LogModel generateLog(double fitness, int size) {
     List<ExperimentRun> runs = new ArrayList<>(1);
     ExperimentRun run = new ExperimentRun(new LinkedList<>());

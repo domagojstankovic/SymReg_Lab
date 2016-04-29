@@ -4,7 +4,6 @@ import hr.fer.zemris.ecf.lab.engine.log.ExperimentRun;
 import hr.fer.zemris.ecf.lab.engine.log.LogModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,27 +25,24 @@ public class HallOfFameUtils {
   }
 
   public static List<FitnessSizeLog> extractParetoFrontier(List<LogModel> logs) {
-    List<FitnessSizeLog> list = new ArrayList<>(logs.size());
+    List<MultiObjectiveIndividual> list = new ArrayList<>(logs.size());
     for (LogModel log : logs) {
       String hof = HallOfFameUtils.extractHof(log.getRuns().get(0));
       FitnessSizePair fitnessSizePair = HallOfFameUtils.extractFitnessAndSize(hof);
       list.add(new FitnessSizeLog(fitnessSizePair, log));
     }
 
-    Collections.sort(list);
-    return filterParetoFrontier(list);
+    List<List<MultiObjectiveIndividual>> fronts = ParetoFrontierUtils.nonDominatedSort(list);
+
+    return filterParetoFrontier(fronts);
   }
 
-  private static List<FitnessSizeLog> filterParetoFrontier(List<FitnessSizeLog> logs) {
+  private static List<FitnessSizeLog> filterParetoFrontier(List<List<MultiObjectiveIndividual>> fronts) {
     List<FitnessSizeLog> filtered = new ArrayList<>();
-    int size = logs.size();
-    for (int i = 0; i < size - 1; i++) {
-      filtered.add(logs.get(i));
-      if (logs.get(i).compareTo(logs.get(i + 1)) != 0) {
-        return filtered;
-      }
+    List<MultiObjectiveIndividual> front = fronts.get(fronts.size() - 1);
+    for (MultiObjectiveIndividual individual : front) {
+      filtered.add((FitnessSizeLog)individual);
     }
-    filtered.add(logs.get(size - 1));
     return filtered;
   }
 

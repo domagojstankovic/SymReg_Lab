@@ -5,7 +5,7 @@ import hr.fer.zemris.ecf.lab.engine.log.LogModel;
 /**
  * Created by dstankovic on 4/28/16.
  */
-public class FitnessSizeLog implements Comparable<FitnessSizeLog> {
+public class FitnessSizeLog implements Comparable<FitnessSizeLog>, MultiObjectiveIndividual {
   public FitnessSizePair fitnessSizePair;
   public LogModel logModel;
 
@@ -22,5 +22,15 @@ public class FitnessSizeLog implements Comparable<FitnessSizeLog> {
   @Override
   public String toString() {
     return fitnessSizePair.toString();
+  }
+
+  @Override
+  public double fitnessAt(int index) {
+    return fitnessSizePair.fitnessAt(index);
+  }
+
+  @Override
+  public int size() {
+    return fitnessSizePair.size();
   }
 }
