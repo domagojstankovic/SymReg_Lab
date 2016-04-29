@@ -16,6 +16,8 @@ import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +45,15 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
     setLocation(300, 100);
     setSize(400, 300);
     setResizable(false);
+
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        super.windowClosing(e);
+        closing();
+      }
+    });
 
     panel = new SRInputPanel();
     JPanel generalPanel = new JPanel();
@@ -78,6 +88,10 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
     generalPanel.add(btnsPanel, BorderLayout.SOUTH);
 
     pack();
+  }
+
+  private void closing() {
+    srManager.stop();
   }
 
   private void stopClicked() {

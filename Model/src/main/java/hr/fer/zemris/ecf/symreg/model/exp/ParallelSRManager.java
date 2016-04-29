@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,14 +45,9 @@ public class ParallelSRManager implements JobListener {
     this.experimentInput = experimentInput;
     stopped = false;
 
-    List<Callable<Void>> tasks = new ArrayList<>(threads);
     for (int i = 0; i < threads; i++) {
-      tasks.add(() -> {
-        runNewExperiment();
-        return null;
-      });
+      invokeNewExperiment();
     }
-    invokeTasks(tasks);
   }
 
   public void stop() {
@@ -66,10 +60,7 @@ public class ParallelSRManager implements JobListener {
 
   private void invokeNewExperiment() {
     if (!stopped) {
-      invokeTask(() -> {
-        runNewExperiment();
-        return null;
-      });
+      invokeTask(() -> runNewExperiment());
     }
   }
 
@@ -85,18 +76,8 @@ public class ParallelSRManager implements JobListener {
     );
   }
 
-  private void invokeTask(Callable<Void> task) {
-    List<Callable<Void>> tasks = new ArrayList<>(1);
-    tasks.add(task);
-    invokeTasks(tasks);
-  }
-
-  private void invokeTasks(List<Callable<Void>> tasks) {
-    try {
-      getService().invokeAll(tasks);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+  private void invokeTask(Runnable task) {
+    getService().execute(task);
   }
 
   private List<LogModel> extractParetoFrontier() {
