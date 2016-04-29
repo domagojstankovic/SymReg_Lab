@@ -25,25 +25,14 @@ public class HallOfFameUtils {
   }
 
   public static List<FitnessSizeLog> extractParetoFrontier(List<LogModel> logs) {
-    List<MultiObjectiveIndividual> list = new ArrayList<>(logs.size());
+    List<FitnessSizeLog> list = new ArrayList<>(logs.size());
     for (LogModel log : logs) {
       String hof = HallOfFameUtils.extractHof(log.getRuns().get(0));
       FitnessSizePair fitnessSizePair = HallOfFameUtils.extractFitnessAndSize(hof);
       list.add(new FitnessSizeLog(fitnessSizePair, log));
     }
 
-    List<List<MultiObjectiveIndividual>> fronts = ParetoFrontierUtils.nonDominatedSort(list);
-
-    return filterParetoFrontier(fronts);
-  }
-
-  private static List<FitnessSizeLog> filterParetoFrontier(List<List<MultiObjectiveIndividual>> fronts) {
-    List<FitnessSizeLog> filtered = new ArrayList<>();
-    List<MultiObjectiveIndividual> front = fronts.get(fronts.size() - 1);
-    for (MultiObjectiveIndividual individual : front) {
-      filtered.add((FitnessSizeLog)individual);
-    }
-    return filtered;
+    return ParetoFrontierUtils.findParetoFrontier(list);
   }
 
   public static FitnessSizePair extractFitnessAndSize(String hof) {

@@ -27,7 +27,33 @@ public class ParetoFrontierUtils {
     }
   }
 
-  public static List<List<MultiObjectiveIndividual>> nonDominatedSort(List<MultiObjectiveIndividual> sols) {
+  public static <T extends MultiObjectiveIndividual> List<T> findParetoFrontier(List<T> sols) {
+    int size = sols.size();
+    int[] dom = new int[size];
+    for (int i = 0; i < size - 1; i++) {
+      for (int j = i + 1; j < size; j++) {
+        T iSol = sols.get(i);
+        T jSol = sols.get(j);
+        int d = domination(iSol, jSol);
+        if (d < 0) {
+          dom[i]++;
+        } else if (d > 0) {
+          dom[j]++;
+        }
+      }
+    }
+
+    List<T> list = new ArrayList<>();
+    for (int i = 0; i < size; i++) {
+      if (dom[i] == 0) {
+        list.add(sols.get(i));
+      }
+    }
+    return list;
+  }
+
+  // not used anymore
+  public static <T extends MultiObjectiveIndividual> List<List<T>> nonDominatedSort(List<T> sols) {
     int n = sols.size();
     List<List<Integer>> s = new ArrayList<>(n);
     for (int i = 0; i < n; i++) {
@@ -49,16 +75,16 @@ public class ParetoFrontierUtils {
         }
       }
     }
-    List<List<MultiObjectiveIndividual>> fronts = new ArrayList<>();
+    List<List<T>> fronts = new ArrayList<>();
     boolean remaining = true;
     while (remaining) {
       remaining = false;
-      List<MultiObjectiveIndividual> front = new ArrayList<>();
+      List<T> front = new ArrayList<>();
       List<Integer> indexes = new ArrayList<>();
       for (int i = 0; i < n; i++) {
         if (dom[i] == 0) {
           remaining = true;
-          MultiObjectiveIndividual sol = sols.get(i);
+          T sol = sols.get(i);
           front.add(sol);
           indexes.add(i);
           dom[i] = -1;
