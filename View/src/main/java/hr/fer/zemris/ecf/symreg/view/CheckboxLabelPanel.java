@@ -8,24 +8,25 @@ import java.awt.*;
  */
 public class CheckboxLabelPanel extends JPanel {
 
-    private JLabel lbl = null;
-    private JCheckBox checkbox = null;
+  private JLabel lbl = null;
+  private JCheckBox checkbox = null;
 
-    public CheckboxLabelPanel(String text) {
-        super();
-        lbl = new JLabel(text);
-        checkbox = new JCheckBox();
+  public CheckboxLabelPanel(String text) {
+    super();
+    lbl = new JLabel(text);
+    checkbox = new JCheckBox();
+    checkbox.setSelected(true);
 
-        setLayout(new BorderLayout());
-        add(checkbox, BorderLayout.WEST);
-        add(lbl, BorderLayout.CENTER);
-    }
+    setLayout(new BorderLayout());
+    add(checkbox, BorderLayout.WEST);
+    add(lbl, BorderLayout.CENTER);
+  }
 
-    public boolean isChecked() {
-        return checkbox.isSelected();
-    }
+  public boolean isChecked() {
+    return checkbox.isSelected();
+  }
 
-    public String getText() {
-        return lbl.getText();
-    }
+  public String getText() {
+    return lbl.getText();
+  }
 }

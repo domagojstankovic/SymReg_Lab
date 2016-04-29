@@ -33,11 +33,19 @@ public class ParallelSRManager implements JobListener {
     this.threads = threads;
 
     logs = new ArrayList<>(threads);
-    service = Executors.newFixedThreadPool(threads);
+  }
+
+  public ExecutorService getService() {
+    if (service == null) {
+      service = Executors.newFixedThreadPool(threads);
+    }
+    return service;
   }
 
   public void run(ExperimentInput experimentInput) {
     this.experimentInput = experimentInput;
+    stopped = false;
+
     List<Callable<Void>> tasks = new ArrayList<>(threads);
     for (int i = 0; i < threads; i++) {
       tasks.add(() -> {
@@ -50,7 +58,10 @@ public class ParallelSRManager implements JobListener {
 
   public void stop() {
     stopped = true;
-    service.shutdown();
+    if (service != null) {
+      service.shutdown();
+      service = null;
+    }
   }
 
   private void invokeNewExperiment() {
@@ -82,7 +93,7 @@ public class ParallelSRManager implements JobListener {
 
   private void invokeTasks(List<Callable<Void>> tasks) {
     try {
-      service.invokeAll(tasks);
+      getService().invokeAll(tasks);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -103,7 +114,8 @@ public class ParallelSRManager implements JobListener {
   }
 
   @Override
-  public void jobInitialized(Job job) {}
+  public void jobInitialized(Job job) {
+  }
 
   @Override
   public void jobStarted(Job job) {
@@ -118,10 +130,12 @@ public class ParallelSRManager implements JobListener {
   @Override
   public void jobPartiallyFinished(Job job, LogModel logModel) {
     synchronized (this) {
-      logs.add(logModel);
-      partiallyFinishedCount++;
-      if (partiallyFinishedCount % threads == 0) {
-        listener.experimentsUpdated(extractParetoFrontier());
+      if (!stopped) {
+        logs.add(logModel);
+        partiallyFinishedCount++;
+        if (partiallyFinishedCount % threads == 0) {
+          listener.experimentsUpdated(extractParetoFrontier());
+        }
       }
     }
   }

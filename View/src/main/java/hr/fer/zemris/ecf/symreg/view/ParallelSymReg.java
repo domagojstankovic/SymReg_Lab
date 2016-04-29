@@ -69,7 +69,7 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
     JButton stopButton = new JButton(new AbstractAction("Stop") {
       @Override
       public void actionPerformed(ActionEvent e) {
-        srManager.stop();
+        stopClicked();
       }
     });
     btnsPanel = new ButtonsPanel(runBtn, resBtn, stopButton);
@@ -78,6 +78,12 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
     generalPanel.add(btnsPanel, BorderLayout.SOUTH);
 
     pack();
+  }
+
+  private void stopClicked() {
+    srManager.stop();
+    btnsPanel.getResBtn().setText("Finished");
+    btnsPanel.getTestBtn().setEnabled(false);
   }
 
   private void resClicked() {
