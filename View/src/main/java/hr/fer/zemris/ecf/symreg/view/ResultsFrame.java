@@ -34,7 +34,9 @@ public class ResultsFrame extends JFrame {
 
     textArea = new JTextArea();
     textArea.setEnabled(false);
-    add(textArea);
+
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    add(scrollPane);
   }
 
   public void setText(String text) {
