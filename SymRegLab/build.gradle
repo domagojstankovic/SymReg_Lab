@@ -1,0 +1,13 @@
+apply plugin: 'application'
+
+dependencies {
+    compile project(':View')
+}
+
+jar {
+    baseName = 'SymReg_Lab'
+    manifest {
+        attributes 'Main-Class': 'hr.fer.zemris.ecf.symreg.SymReg'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

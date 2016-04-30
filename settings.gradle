@@ -1,4 +1,6 @@
 rootProject.name = 'SymReg_Lab'
 include 'Model'
 include 'View'
+include 'SymRegLab'
+include 'ParallelSymRegLab'
 

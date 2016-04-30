@@ -7,14 +7,14 @@ buildscript {
     }
 }
 
-allprojects{
+allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    version = '1.0'
+    version = '2.0'
 }
 
-subprojects{
+subprojects {
     apply plugin: 'java'
 
     sourceCompatibility = 1.8

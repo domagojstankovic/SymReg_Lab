@@ -1,4 +1,4 @@
-package hr.fer.zemris.ecf.symreg.view;
+package hr.fer.zemris.ecf.symreg;
 
 import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationReader;
@@ -12,6 +12,9 @@ import hr.fer.zemris.ecf.symreg.model.logger.Logger;
 import hr.fer.zemris.ecf.symreg.model.logger.LoggerProvider;
 import hr.fer.zemris.ecf.symreg.model.logger.impl.FileLogger;
 import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
+import hr.fer.zemris.ecf.symreg.view.ButtonsPanel;
+import hr.fer.zemris.ecf.symreg.view.ResultsFrame;
+import hr.fer.zemris.ecf.symreg.view.SRInputPanel;
 
 import javax.swing.*;
 import java.awt.*;
