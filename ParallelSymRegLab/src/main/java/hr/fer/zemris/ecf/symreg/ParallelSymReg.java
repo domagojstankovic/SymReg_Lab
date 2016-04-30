@@ -94,7 +94,9 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
   }
 
   private void closing() {
-    srManager.stop();
+    if (srManager != null) {
+      srManager.stop();
+    }
   }
 
   private void stopClicked() {
