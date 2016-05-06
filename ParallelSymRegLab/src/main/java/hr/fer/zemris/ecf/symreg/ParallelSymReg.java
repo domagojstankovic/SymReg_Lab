@@ -15,6 +15,7 @@ import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
 import hr.fer.zemris.ecf.symreg.view.ButtonsPanel;
 import hr.fer.zemris.ecf.symreg.view.ResultsFrame;
 import hr.fer.zemris.ecf.symreg.view.SRInputPanel;
+import hr.fer.zemris.ecf.symreg.view.TestFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +47,6 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
   private void initGUI() {
     setTitle("Symbolic regression Lab");
     setLocation(300, 100);
-    setSize(400, 300);
     setResizable(false);
 
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -63,6 +63,16 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
     generalPanel.setLayout(new BorderLayout());
     setContentPane(generalPanel);
 
+    initBtns();
+    initMenuBar();
+
+    generalPanel.add(panel, BorderLayout.CENTER);
+    generalPanel.add(btnsPanel, BorderLayout.SOUTH);
+
+    pack();
+  }
+
+  private void initBtns() {
     // Buttons
     JButton runBtn = new JButton(new AbstractAction() {
       @Override
@@ -85,12 +95,27 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
         stopClicked();
       }
     });
+
     btnsPanel = new ButtonsPanel(runBtn, resBtn, stopButton);
+  }
 
-    generalPanel.add(panel, BorderLayout.CENTER);
-    generalPanel.add(btnsPanel, BorderLayout.SOUTH);
+  private void initMenuBar() {
+    JMenu testMenu = new JMenu("Test");
+    testMenu.add(new AbstractAction("Test individual") {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        testIndividual();
+      }
+    });
 
-    pack();
+    JMenuBar menuBar = new JMenuBar();
+    menuBar.add(testMenu);
+
+    setJMenuBar(menuBar);
+  }
+
+  private void testIndividual() {
+    new TestFrame().setVisible(true);
   }
 
   private void closing() {

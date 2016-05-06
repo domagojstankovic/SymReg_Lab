@@ -1,5 +1,7 @@
 package hr.fer.zemris.ecf.symreg.view;
 
+import hr.fer.zemris.ecf.symreg.model.info.InfoService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -55,7 +57,7 @@ public class BrowsePanel extends JPanel {
   protected void click() {
     JFileChooser fc;
     if (startDir == null) {
-      fc = new JFileChooser();
+      fc = new JFileChooser(InfoService.getInstance().getLastSelectedPath());
     } else {
       fc = new JFileChooser(startDir);
     }
@@ -64,7 +66,9 @@ public class BrowsePanel extends JPanel {
       return;
     }
     file = fc.getSelectedFile();
-    textField.setText(file.getAbsolutePath());
+    String absolutePath = file.getAbsolutePath();
+    textField.setText(absolutePath);
+    InfoService.getInstance().setLastSelectedPath(absolutePath);
   }
 
   /**

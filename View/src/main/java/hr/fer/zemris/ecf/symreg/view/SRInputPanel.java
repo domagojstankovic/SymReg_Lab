@@ -5,7 +5,6 @@ import hr.fer.zemris.ecf.symreg.model.info.SupportedFunctionsFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 /**
  * Created by dstankovic on 4/27/16.
@@ -44,11 +43,11 @@ public class SRInputPanel extends JPanel {
     JLabel inputFileLbl = new JLabel("Input file");
     String startDir = ".";
     InfoService.getInstance().setLastSelectedPath(startDir);
-    inputFileBrowsePnl = new BrowsePanel("", new File(startDir));
+    inputFileBrowsePnl = new BrowsePanel("");
 
     // Error weights file
     JLabel errorWeightsFileLbl = new JLabel("Error weights file");
-    errorWeightsFileBrowsePnl = new BrowsePanel("", new File(startDir));
+    errorWeightsFileBrowsePnl = new BrowsePanel("");
 
     // Error metrics
     JLabel errorMetricLbl = new JLabel("Error metric");

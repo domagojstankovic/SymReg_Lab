@@ -53,11 +53,15 @@ public class SRManager {
   public void runTest(LogModel log) throws IOException, InterruptedException {
     String hofFile = writeHofToFile(log);
     File tempOutFile = File.createTempFile("ecf_srm_test_data_out", ".txt", new File("./"));
-    String ecfExe = generateECFexe();
     String tempOutPath = tempOutFile.getAbsolutePath();
-    System.out.println("Test: " + ecfExe + " " + currConfPath + " " + hofFile + " " + tempOutPath);
-    ProcessRunner.runProcess(ecfExe, currConfPath, hofFile, tempOutPath);
+    runTest(currConfPath, hofFile, tempOutPath);
     tempOutFile.deleteOnExit();
+  }
+
+  public void runTest(String confFile, String hofFile, String testOutFile) throws IOException, InterruptedException {
+    String ecfExe = generateECFexe();
+    System.out.println("Test: " + ecfExe + " " + confFile + " " + hofFile + " " + testOutFile);
+    ProcessRunner.runProcess(ecfExe, confFile, hofFile, testOutFile);
   }
 
   private static String writeHofToFile(LogModel log) throws IOException {
