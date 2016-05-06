@@ -6,7 +6,6 @@ import hr.fer.zemris.ecf.symreg.model.info.SupportedFunctionsFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.LinkedList;
 
 /**
  * Created by dstankovic on 4/27/16.
@@ -14,7 +13,7 @@ import java.util.LinkedList;
 public class SRInputPanel extends JPanel {
   private BrowsePanel inputFileBrowsePnl = null;
   private BrowsePanel errorWeightsFileBrowsePnl = null;
-  private RadioButtonsPanel errorMetricsPanel = null;
+  private DropDownPanel errorMetricsPanel = null;
   private JTextField terminalsetTxtFld = null;
   private CheckboxListPanel checkboxPanel = null;
   private JCheckBox linearScalingCheckBox = null;
@@ -53,11 +52,12 @@ public class SRInputPanel extends JPanel {
 
     // Error metrics
     JLabel errorMetricLbl = new JLabel("Error metric");
-    java.util.List<TextValuePair> errorMetricsTextValue = new LinkedList<>();
-    errorMetricsTextValue.add(new TextValuePair("Mean square error", "mean_square_error"));
-    errorMetricsTextValue.add(new TextValuePair("Mean absolute error", "mean_absolute_error"));
-    errorMetricsTextValue.add(new TextValuePair("Mean absolute percentage error", "mean_absolute_percentage_error"));
-    errorMetricsPanel = new RadioButtonsPanel(errorMetricsTextValue);
+    TextValuePair[] errorMetricsTextValue = new TextValuePair[]{
+        new TextValuePair("Mean square error", "mean_square_error"),
+        new TextValuePair("Mean absolute error", "mean_absolute_error"),
+        new TextValuePair("Mean absolute percentage error", "mean_absolute_percentage_error")
+    };
+    errorMetricsPanel = new DropDownPanel(errorMetricsTextValue);
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
@@ -115,7 +115,7 @@ public class SRInputPanel extends JPanel {
     return errorWeightsFileBrowsePnl;
   }
 
-  public RadioButtonsPanel getErrorMetricsPanel() {
+  public DropDownPanel getErrorMetricsPanel() {
     return errorMetricsPanel;
   }
 
