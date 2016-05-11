@@ -33,7 +33,12 @@ public class ResultsFrame extends JFrame {
     }
 
     textArea = new JTextArea();
-    textArea.setEnabled(false);
+    textArea.setEnabled(true);
+    textArea.setEditable(false);
+
+    Font oldFont = textArea.getFont();
+    Font newFont = new Font(oldFont.getName(), oldFont.getStyle(), 14);
+    textArea.setFont(newFont);
 
     JScrollPane scrollPane = new JScrollPane(textArea);
     add(scrollPane);
