@@ -5,20 +5,16 @@ import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationReader;
 import hr.fer.zemris.ecf.lab.engine.conf.xml.XmlConfigurationWriter;
 import hr.fer.zemris.ecf.lab.engine.log.ExperimentRun;
 import hr.fer.zemris.ecf.lab.engine.log.LogModel;
-import hr.fer.zemris.ecf.symreg.model.exp.ExperimentInput;
 import hr.fer.zemris.ecf.symreg.model.exp.ParallelExperimentsListener;
 import hr.fer.zemris.ecf.symreg.model.exp.ParallelSRManager;
 import hr.fer.zemris.ecf.symreg.model.logger.Logger;
 import hr.fer.zemris.ecf.symreg.model.logger.LoggerProvider;
 import hr.fer.zemris.ecf.symreg.model.logger.impl.FileLogger;
 import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
+import hr.fer.zemris.ecf.symreg.view.AbstractSymReg;
 import hr.fer.zemris.ecf.symreg.view.ButtonsPanel;
-import hr.fer.zemris.ecf.symreg.view.ResultsFrame;
-import hr.fer.zemris.ecf.symreg.view.SRInputPanel;
-import hr.fer.zemris.ecf.symreg.view.TestFrame;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -29,27 +25,13 @@ import java.util.Set;
 /**
  * Created by Domagoj on 06/06/15.
  */
-public class ParallelSymReg extends JFrame implements ParallelExperimentsListener {
-
-  private ButtonsPanel btnsPanel = null;
+public class ParallelSymReg extends AbstractSymReg implements ParallelExperimentsListener {
   private List<LogModel> paretoFrontier = null;
   private ParallelSRManager srManager = null;
-  private ResultsFrame resultsFrame = new ResultsFrame();
-  private SRInputPanel panel;
 
   public ParallelSymReg() {
     super();
-    initGUI();
 
-    setVisible(true);
-  }
-
-  private void initGUI() {
-    setTitle("Symbolic regression Lab");
-    setLocation(300, 100);
-    setResizable(false);
-
-    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -57,22 +39,10 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
         closing();
       }
     });
-
-    panel = new SRInputPanel();
-    JPanel generalPanel = new JPanel();
-    generalPanel.setLayout(new BorderLayout());
-    setContentPane(generalPanel);
-
-    initBtns();
-    initMenuBar();
-
-    generalPanel.add(panel, BorderLayout.CENTER);
-    generalPanel.add(btnsPanel, BorderLayout.SOUTH);
-
-    pack();
   }
 
-  private void initBtns() {
+  @Override
+  protected void initButtons() {
     // Buttons
     JButton runBtn = new JButton(new AbstractAction() {
       @Override
@@ -97,25 +67,6 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
     });
 
     btnsPanel = new ButtonsPanel(runBtn, resBtn, stopButton);
-  }
-
-  private void initMenuBar() {
-    JMenu testMenu = new JMenu("Test");
-    testMenu.add(new AbstractAction("Test individual") {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        testIndividual();
-      }
-    });
-
-    JMenuBar menuBar = new JMenuBar();
-    menuBar.add(testMenu);
-
-    setJMenuBar(menuBar);
-  }
-
-  private void testIndividual() {
-    new TestFrame().setVisible(true);
   }
 
   private void closing() {
@@ -173,15 +124,8 @@ public class ParallelSymReg extends JFrame implements ParallelExperimentsListene
   }
 
   private void runClicked() {
-    String terminalset = panel.getTerminalsetTxtFld().getText();
-    String inputFile = panel.getInputFileBrowsePnl().getTextField();
-    List<String> functions = panel.getCheckboxPanel().getCheckedItems();
-    boolean linearScaling = panel.getLinearScalingCheckBox().isSelected();
-    String errorWeightsFile = panel.getErrorWeightsFileBrowsePnl().getTextField();
-    String errorMetric = panel.getErrorMetricsPanel().getSelectedValue();
-
     ParallelSRManager manager = getSrManager();
-    manager.run(new ExperimentInput(terminalset, inputFile, functions, linearScaling, errorWeightsFile, errorMetric));
+    manager.run(getExperimentInput());
   }
 
   public ParallelSRManager getSrManager() {

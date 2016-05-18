@@ -12,13 +12,9 @@ import hr.fer.zemris.ecf.symreg.model.logger.Logger;
 import hr.fer.zemris.ecf.symreg.model.logger.LoggerProvider;
 import hr.fer.zemris.ecf.symreg.model.logger.impl.FileLogger;
 import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
-import hr.fer.zemris.ecf.symreg.view.ButtonsPanel;
-import hr.fer.zemris.ecf.symreg.view.ResultsFrame;
-import hr.fer.zemris.ecf.symreg.view.SRInputPanel;
-import hr.fer.zemris.ecf.symreg.view.TestFrame;
+import hr.fer.zemris.ecf.symreg.view.*;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
@@ -26,42 +22,12 @@ import java.util.List;
 /**
  * Created by Domagoj on 06/06/15.
  */
-public class SymReg extends JFrame implements JobListener {
-
-  private SRInputPanel inputPanel;
-  private ButtonsPanel btnsPanel = null;
+public class SymReg extends AbstractSymReg implements JobListener {
   private LogModel log = null;
   private SRManager srManager = null;
-  private ResultsFrame resultsFrame = new ResultsFrame();
 
-  public SymReg() {
-    super();
-    initGUI();
-
-    setVisible(true);
-  }
-
-  private void initGUI() {
-    setTitle("Symbolic regression Lab");
-    setLocation(300, 100);
-    setResizable(false);
-    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-    inputPanel = new SRInputPanel();
-    JPanel generalPanel = new JPanel();
-    generalPanel.setLayout(new BorderLayout());
-    setContentPane(generalPanel);
-
-    initBtns();
-    initMenuBar();
-
-    generalPanel.add(inputPanel, BorderLayout.CENTER);
-    generalPanel.add(btnsPanel, BorderLayout.SOUTH);
-
-    pack();
-  }
-
-  private void initBtns() {
+  @Override
+  protected void initButtons() {
     // Buttons
     JButton runBtn = new JButton(new AbstractAction() {
       @Override
@@ -88,25 +54,6 @@ public class SymReg extends JFrame implements JobListener {
 
 
     btnsPanel = new ButtonsPanel(runBtn, resBtn, testBtn);
-  }
-
-  private void initMenuBar() {
-    JMenu testMenu = new JMenu("Test");
-    testMenu.add(new AbstractAction("Test individual") {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        testIndividual();
-      }
-    });
-
-    JMenuBar menuBar = new JMenuBar();
-    menuBar.add(testMenu);
-
-    setJMenuBar(menuBar);
-  }
-
-  private void testIndividual() {
-    new TestFrame().setVisible(true);
   }
 
   private void testClicked() {
@@ -149,15 +96,8 @@ public class SymReg extends JFrame implements JobListener {
   }
 
   private void runClicked() {
-    String terminalset = inputPanel.getTerminalsetTxtFld().getText();
-    String inputFile = inputPanel.getInputFileBrowsePnl().getTextField();
-    List<String> functions = inputPanel.getCheckboxPanel().getCheckedItems();
-    boolean linearScaling = inputPanel.getLinearScalingCheckBox().isSelected();
-    String errorWeightsFile = inputPanel.getErrorWeightsFileBrowsePnl().getTextField();
-    String errorMetric = inputPanel.getErrorMetricsPanel().getSelectedValue();
-
     SRManager manager = getSrManager();
-    manager.run(terminalset, inputFile, functions, linearScaling, errorWeightsFile, errorMetric);
+    manager.run(getExperimentInput());
   }
 
   public SRManager getSrManager() {

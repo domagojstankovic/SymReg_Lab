@@ -5,16 +5,14 @@ import hr.fer.zemris.ecf.lab.engine.conf.ConfigurationService;
 import hr.fer.zemris.ecf.lab.engine.console.DetectOS;
 import hr.fer.zemris.ecf.lab.engine.log.LogModel;
 import hr.fer.zemris.ecf.lab.engine.param.Configuration;
-import hr.fer.zemris.ecf.lab.engine.param.Entry;
-import hr.fer.zemris.ecf.lab.engine.param.EntryBlock;
-import hr.fer.zemris.ecf.lab.engine.param.EntryList;
 import hr.fer.zemris.ecf.lab.engine.task.ExperimentsManager;
 import hr.fer.zemris.ecf.lab.engine.task.JobListener;
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
-import java.util.List;
-import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 
 /**
  * Created by Domagoj on 08/06/15.
@@ -31,15 +29,9 @@ public class SRManager {
     this.listener = listener;
   }
 
-  public void run(String terminalset,
-                  String inputFile,
-                  List<String> functions,
-                  boolean linearScaling,
-                  String errorWeightsFile,
-                  String errorMetric) {
-
-    Configuration conf = readConfig();
-    updateConfig(conf, terminalset, inputFile, functions, linearScaling, errorWeightsFile, errorMetric);
+  public void run(ExperimentInput experimentInput) {
+    Configuration conf = readTemplateConfiguration();
+    ExperimentUtils.updateConfiguration(conf, experimentInput);
 
     ExperimentsManager manager = new ExperimentsManager(listener);
 
@@ -48,15 +40,6 @@ public class SRManager {
     int threads = 1;
     currConfPath = confPath;
     manager.runExperiment(conf, ecfPath, confPath, threads, true);
-  }
-
-  public void run(ExperimentInput experimentInput) {
-    run(experimentInput.getTerminalset(),
-        experimentInput.getInputFile(),
-        experimentInput.getFunctions(),
-        experimentInput.isLinearScaling(),
-        experimentInput.getErrorWeightsFile(),
-        experimentInput.getErrorMetric());
   }
 
   public void runTest(LogModel log) throws IOException, InterruptedException {
@@ -119,94 +102,9 @@ public class SRManager {
     }
   }
 
-  private Configuration readConfig() {
+  public static Configuration readTemplateConfiguration() {
     InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(CONFIG_FILE);
     ConfigurationReader reader = ConfigurationService.getInstance().getReader();
     return reader.readArchive(is);
-  }
-
-  private void updateConfig(Configuration conf,
-                            String terminalset,
-                            String inputFile,
-                            List<String> functions,
-                            boolean linearScaling,
-                            String errorWeightsFile,
-                            String errorMetric) {
-
-    List<EntryBlock> genotypes = conf.genotypes.get(0);
-    EntryBlock treeGen = genotypes.get(0);
-
-    Entry functionsetEntry = treeGen.getEntryWithKey("functionset");
-    Entry terminalsetEntry = treeGen.getEntryWithKey("terminalset");
-
-    EntryList registry = conf.registry;
-    Entry inputfileEntry = registry.getEntryWithKey("input_file");
-    Entry linearScalingEntry = registry.getEntryWithKey("linear_scaling");
-
-    functionsetEntry.value = extractFunctionset(functions);
-    terminalsetEntry.value = extractInputVars(inputFile) + terminalset;
-    inputfileEntry.value = inputFile;
-    linearScalingEntry.value = linearScaling ? "true" : "false";
-
-    if (errorWeightsFile != null && !errorWeightsFile.trim().isEmpty()) {
-      // error weights file is defined
-      Entry errorWeightsFileEntry = new Entry("error_weights.file", errorWeightsFile);
-      registry.getEntryList().add(errorWeightsFileEntry);
-    }
-
-    if (errorMetric != null) {
-      // add error metric parameter
-      Entry errorMetricEntry = new Entry("error_metric", errorMetric);
-      registry.getEntryList().add(errorMetricEntry);
-    }
-  }
-
-  private String extractInputVars(String inputFile) {
-    int num = numOfInputVars(inputFile);
-
-    StringBuilder sb = new StringBuilder();
-    for (int i = 1; i <= num; i++) {
-      sb.append("x" + i + " ");
-    }
-    return sb.toString();
-  }
-
-  private int numOfInputVars(String inputFile) {
-    Scanner sc;
-    try {
-      sc = new Scanner(new File(inputFile));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      throw new SRManagerException(e);
-    }
-
-    int num = 0;
-    while (sc.hasNextLine()) {
-      String line = sc.nextLine().trim();
-      if (line.isEmpty()) {
-        continue;
-      }
-      String[] parts = line.split("\\s+");
-      num = parts.length - 1;
-      break;
-    }
-
-    sc.close();
-    return num;
-  }
-
-  private String extractFunctionset(List<String> functions) {
-    if (functions == null || functions.isEmpty()) {
-      return "";
-    }
-
-    StringBuilder sb = new StringBuilder();
-
-    for (String f : functions) {
-      sb.append(f + " ");
-    }
-    sb.deleteCharAt(sb.length() - 1);
-
-    return sb.toString();
   }
 }
