@@ -66,14 +66,7 @@ public class ParallelSRManager implements JobListener {
 
   private void runNewExperiment() {
     SRManager manager = new SRManager(this);
-    manager.run(
-        experimentInput.getTerminalset(),
-        experimentInput.getInputFile(),
-        experimentInput.getFunctions(),
-        experimentInput.isLinearScaling(),
-        experimentInput.getErrorWeightsFile(),
-        experimentInput.getErrorMetric()
-    );
+    manager.run(experimentInput);
   }
 
   private void invokeTask(Runnable task) {

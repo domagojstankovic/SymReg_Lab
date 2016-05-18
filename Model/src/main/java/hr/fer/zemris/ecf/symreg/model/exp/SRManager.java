@@ -50,6 +50,15 @@ public class SRManager {
     manager.runExperiment(conf, ecfPath, confPath, threads, true);
   }
 
+  public void run(ExperimentInput experimentInput) {
+    run(experimentInput.getTerminalset(),
+        experimentInput.getInputFile(),
+        experimentInput.getFunctions(),
+        experimentInput.isLinearScaling(),
+        experimentInput.getErrorWeightsFile(),
+        experimentInput.getErrorMetric());
+  }
+
   public void runTest(LogModel log) throws IOException, InterruptedException {
     String hofFile = writeHofToFile(log);
     File tempOutFile = File.createTempFile("ecf_srm_test_data_out", ".txt", new File("./"));
