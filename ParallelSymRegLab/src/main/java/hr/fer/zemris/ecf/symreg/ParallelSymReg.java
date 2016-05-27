@@ -130,7 +130,7 @@ public class ParallelSymReg extends AbstractSymReg implements ParallelExperiment
 
   public ParallelSRManager getSrManager() {
     if (srManager == null) {
-      int threads = Runtime.getRuntime().availableProcessors();
+      int threads = Math.max(Runtime.getRuntime().availableProcessors() - 1, 1);
       srManager = new ParallelSRManager(this, threads);
     }
     return srManager;
