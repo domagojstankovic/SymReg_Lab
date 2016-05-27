@@ -23,13 +23,17 @@ public class ButtonsPanel extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         add(runBtn);
-        testBtn.setVisible(false);
+        if (testBtn != null) {
+            testBtn.setVisible(false);
+        }
     }
 
     public void addResBtn() {
         if (!resBtnAdded) {
             add(resBtn);
-            add(testBtn);
+            if (testBtn != null) {
+                add(testBtn);
+            }
             resBtnAdded = true;
         }
     }

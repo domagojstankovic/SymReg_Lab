@@ -78,7 +78,10 @@ public class ParallelSymReg extends AbstractSymReg implements ParallelExperiment
   private void stopClicked() {
     srManager.stop();
     btnsPanel.getResBtn().setText("Finished");
-    btnsPanel.getTestBtn().setEnabled(false);
+    JButton testBtn = btnsPanel.getTestBtn();
+    if (testBtn != null) {
+      testBtn.setEnabled(false);
+    }
   }
 
   private void resClicked() {
@@ -159,15 +162,21 @@ public class ParallelSymReg extends AbstractSymReg implements ParallelExperiment
     btnsPanel.addResBtn();
     btnsPanel.getResBtn().setText("Started");
     btnsPanel.getResBtn().setEnabled(false);
-    btnsPanel.getTestBtn().setVisible(true);
-    btnsPanel.getTestBtn().setEnabled(false);
+    JButton testBtn = btnsPanel.getTestBtn();
+    if (testBtn != null) {
+      testBtn.setVisible(true);
+      testBtn.setEnabled(false);
+    }
   }
 
   @Override
   public void experimentsUpdated(List<LogModel> paretoFrontier) {
     btnsPanel.getResBtn().setEnabled(true);
     btnsPanel.getResBtn().setText("Running");
-    btnsPanel.getTestBtn().setEnabled(true);
+    JButton testBtn = btnsPanel.getTestBtn();
+    if (testBtn != null) {
+      testBtn.setEnabled(true);
+    }
     this.paretoFrontier = paretoFrontier;
 
     displayResults();

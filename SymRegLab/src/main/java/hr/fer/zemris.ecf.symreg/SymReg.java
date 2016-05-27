@@ -12,11 +12,11 @@ import hr.fer.zemris.ecf.symreg.model.logger.Logger;
 import hr.fer.zemris.ecf.symreg.model.logger.LoggerProvider;
 import hr.fer.zemris.ecf.symreg.model.logger.impl.FileLogger;
 import hr.fer.zemris.ecf.symreg.model.util.HallOfFameUtils;
-import hr.fer.zemris.ecf.symreg.view.*;
+import hr.fer.zemris.ecf.symreg.view.AbstractSymReg;
+import hr.fer.zemris.ecf.symreg.view.ButtonsPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -44,25 +44,7 @@ public class SymReg extends AbstractSymReg implements JobListener {
       }
     });
 
-    JButton testBtn = new JButton(new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        testClicked();
-      }
-    });
-    testBtn.setText("Test");
-
-
-    btnsPanel = new ButtonsPanel(runBtn, resBtn, testBtn);
-  }
-
-  private void testClicked() {
-    SRManager manager = getSrManager();
-    try {
-      manager.runTest(log);
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
+    btnsPanel = new ButtonsPanel(runBtn, resBtn, null);
   }
 
   private void resClicked() {
@@ -154,7 +136,10 @@ public class SymReg extends AbstractSymReg implements JobListener {
     btnsPanel.getResBtn().setEnabled(true);
     btnsPanel.getResBtn().setText("Finished");
     log = logModel;
-    btnsPanel.getTestBtn().setVisible(true);
+    JButton testBtn = btnsPanel.getTestBtn();
+    if (testBtn != null) {
+      testBtn.setVisible(true);
+    }
 
     ExperimentRun run = log.getRuns().get(0);
     String hof = resultsDisplayText(run);
