@@ -5,5 +5,6 @@ package hr.fer.zemris.ecf.symreg.model.util;
  */
 public interface MultiObjectiveIndividual {
   double fitnessAt(int index);
+
   int size();
 }

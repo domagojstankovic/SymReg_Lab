@@ -5,25 +5,25 @@ package hr.fer.zemris.ecf.symreg.model.info;
  */
 public class InfoService {
 
-    private String lastSelectedPath;
+  private String lastSelectedPath;
 
-    private static InfoService instance = null;
+  private static InfoService instance = null;
 
-    private InfoService() {
+  private InfoService() {
+  }
+
+  public static InfoService getInstance() {
+    if (instance == null) {
+      instance = new InfoService();
     }
+    return instance;
+  }
 
-    public static InfoService getInstance() {
-        if (instance == null) {
-            instance = new InfoService();
-        }
-        return instance;
-    }
+  public void setLastSelectedPath(String lastSelectedPath) {
+    this.lastSelectedPath = lastSelectedPath;
+  }
 
-    public void setLastSelectedPath(String lastSelectedPath) {
-        this.lastSelectedPath = lastSelectedPath;
-    }
-
-    public String getLastSelectedPath() {
-        return lastSelectedPath;
-    }
+  public String getLastSelectedPath() {
+    return lastSelectedPath;
+  }
 }

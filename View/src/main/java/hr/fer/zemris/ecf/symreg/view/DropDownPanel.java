@@ -17,6 +17,6 @@ public class DropDownPanel extends JPanel {
   }
 
   public String getSelectedValue() {
-    return ((TextValuePair)dropDown.getSelectedItem()).getValue();
+    return ((TextValuePair) dropDown.getSelectedItem()).getValue();
   }
 }

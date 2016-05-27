@@ -5,20 +5,20 @@ package hr.fer.zemris.ecf.symreg.model.logger;
  */
 public class LoggerProvider {
 
-    private static Logger instance;
+  private static Logger instance;
 
-    private LoggerProvider() {
-    }
+  private LoggerProvider() {
+  }
 
-    public static Logger getLogger() {
-        return instance;
-    }
+  public static Logger getLogger() {
+    return instance;
+  }
 
-    public static void setLogger(Logger logger) {
-        if (instance != null) {
-            throw new IllegalStateException("Looger implementation has already been set");
-        }
-        instance = logger;
+  public static void setLogger(Logger logger) {
+    if (instance != null) {
+      throw new IllegalStateException("Looger implementation has already been set");
     }
+    instance = logger;
+  }
 
 }

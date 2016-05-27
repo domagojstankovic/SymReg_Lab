@@ -7,16 +7,16 @@ import hr.fer.zemris.ecf.lab.engine.console.DetectOS;
  */
 public class EcfFileProvider {
 
-    public static String getEcfFile() {
-        if (DetectOS.isMac()) {
-            return "exe/mac_SRM";
-        }
-        if (DetectOS.isWindows()) {
-            return "exe/win_SRM.exe";
-        }
-        if (DetectOS.isUnix()) {
-            return "exe/linux_SRM";
-        }
-        return null;
+  public static String getEcfFile() {
+    if (DetectOS.isMac()) {
+      return "exe/mac_SRM";
     }
+    if (DetectOS.isWindows()) {
+      return "exe/win_SRM.exe";
+    }
+    if (DetectOS.isUnix()) {
+      return "exe/linux_SRM";
+    }
+    return null;
+  }
 }

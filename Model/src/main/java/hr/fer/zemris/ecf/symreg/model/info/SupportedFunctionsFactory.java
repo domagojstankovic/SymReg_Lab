@@ -5,7 +5,7 @@ package hr.fer.zemris.ecf.symreg.model.info;
  */
 public class SupportedFunctionsFactory {
 
-    public static SupportingFunctionsProvider getProvider() {
-        return new HardcodedFunctionsProvider();
-    }
+  public static SupportingFunctionsProvider getProvider() {
+    return new HardcodedFunctionsProvider();
+  }
 }

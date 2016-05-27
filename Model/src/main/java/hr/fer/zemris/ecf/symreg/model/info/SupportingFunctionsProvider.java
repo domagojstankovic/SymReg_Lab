@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface SupportingFunctionsProvider {
 
-    List<String> supportedFunctions();
+  List<String> supportedFunctions();
 }

@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class ExperimentUtils {
   /**
    * Returns same configuration.
-   * */
+   */
   public static Configuration anulateBatchRepeats(Configuration configuration) {
     final String batchRepeatsKey = "batch.repeats";
     Entry batchRepeatsEntry = configuration.registry.getEntryWithKey(batchRepeatsKey);
@@ -24,7 +24,7 @@ public class ExperimentUtils {
       // no batch.repeats entry in registry
       configuration.registry.getEntryList().add(new Entry(batchRepeatsKey, "0"));
     } else {
-      batchRepeatsEntry.value ="0";
+      batchRepeatsEntry.value = "0";
     }
     return configuration;
   }
@@ -42,12 +42,12 @@ public class ExperimentUtils {
   }
 
   private static void updateConfiguration(Configuration conf,
-                                         String terminalset,
-                                         String inputFile,
-                                         List<String> functions,
-                                         boolean linearScaling,
-                                         String errorWeightsFile,
-                                         String errorMetric) {
+                                          String terminalset,
+                                          String inputFile,
+                                          List<String> functions,
+                                          boolean linearScaling,
+                                          String errorWeightsFile,
+                                          String errorMetric) {
 
     List<EntryBlock> genotypes = conf.genotypes.get(0);
     EntryBlock treeGen = genotypes.get(0);

@@ -9,5 +9,6 @@ import java.util.List;
  */
 public interface ParallelExperimentsListener {
   void experimentsStarted();
+
   void experimentsUpdated(List<LogModel> paretoFrontier);
 }

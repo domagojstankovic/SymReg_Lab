@@ -8,45 +8,45 @@ import java.awt.*;
  */
 public class ButtonsPanel extends JPanel {
 
-    private JButton runBtn;
-    private JButton resBtn;
-    private JButton testBtn;
-    private boolean resBtnAdded = false;
+  private JButton runBtn;
+  private JButton resBtn;
+  private JButton testBtn;
+  private boolean resBtnAdded = false;
 
-    public ButtonsPanel(JButton runBtn, JButton resBtn, JButton testBtn) {
-        super();
-        this.runBtn = runBtn;
-        this.resBtn = resBtn;
-        this.testBtn = testBtn;
+  public ButtonsPanel(JButton runBtn, JButton resBtn, JButton testBtn) {
+    super();
+    this.runBtn = runBtn;
+    this.resBtn = resBtn;
+    this.testBtn = testBtn;
 
-        setBackground(new Color(135, 154, 152));
+    setBackground(new Color(135, 154, 152));
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        add(runBtn);
-        if (testBtn != null) {
-            testBtn.setVisible(false);
-        }
+    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    add(runBtn);
+    if (testBtn != null) {
+      testBtn.setVisible(false);
     }
+  }
 
-    public void addResBtn() {
-        if (!resBtnAdded) {
-            add(resBtn);
-            if (testBtn != null) {
-                add(testBtn);
-            }
-            resBtnAdded = true;
-        }
+  public void addResBtn() {
+    if (!resBtnAdded) {
+      add(resBtn);
+      if (testBtn != null) {
+        add(testBtn);
+      }
+      resBtnAdded = true;
     }
+  }
 
-    public JButton getRunBtn() {
-        return runBtn;
-    }
+  public JButton getRunBtn() {
+    return runBtn;
+  }
 
-    public JButton getResBtn() {
-        return resBtn;
-    }
+  public JButton getResBtn() {
+    return resBtn;
+  }
 
-    public JButton getTestBtn() {
-        return testBtn;
-    }
+  public JButton getTestBtn() {
+    return testBtn;
+  }
 }

@@ -5,22 +5,22 @@ package hr.fer.zemris.ecf.symreg.model.exp;
  */
 public class SRManagerException extends RuntimeException {
 
-    public SRManagerException() {
-    }
+  public SRManagerException() {
+  }
 
-    public SRManagerException(String message) {
-        super(message);
-    }
+  public SRManagerException(String message) {
+    super(message);
+  }
 
-    public SRManagerException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public SRManagerException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public SRManagerException(Throwable cause) {
-        super(cause);
-    }
+  public SRManagerException(Throwable cause) {
+    super(cause);
+  }
 
-    public SRManagerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+  public SRManagerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
 }

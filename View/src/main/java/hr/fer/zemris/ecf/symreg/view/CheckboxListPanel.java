@@ -9,26 +9,26 @@ import java.util.List;
  */
 public class CheckboxListPanel extends JPanel {
 
-    private List<CheckboxLabelPanel> checkboxes = new ArrayList<>();
+  private List<CheckboxLabelPanel> checkboxes = new ArrayList<>();
 
-    public CheckboxListPanel(List<String> txtList) {
-        super();
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+  public CheckboxListPanel(List<String> txtList) {
+    super();
+    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-        for (String txt : txtList) {
-            CheckboxLabelPanel box = new CheckboxLabelPanel(txt);
-            checkboxes.add(box);
-            add(box);
-        }
+    for (String txt : txtList) {
+      CheckboxLabelPanel box = new CheckboxLabelPanel(txt);
+      checkboxes.add(box);
+      add(box);
     }
+  }
 
-    public List<String> getCheckedItems() {
-        List<String> list = new ArrayList<>();
-        for (CheckboxLabelPanel box : checkboxes) {
-            if (box.isChecked()) {
-                list.add(box.getText());
-            }
-        }
-        return list;
+  public List<String> getCheckedItems() {
+    List<String> list = new ArrayList<>();
+    for (CheckboxLabelPanel box : checkboxes) {
+      if (box.isChecked()) {
+        list.add(box.getText());
+      }
     }
+    return list;
+  }
 }

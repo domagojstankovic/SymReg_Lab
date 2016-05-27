@@ -4,21 +4,21 @@ package hr.fer.zemris.ecf.symreg.model.util;
  * Created by dstankovic on 4/27/16.
  */
 public class FitnessSizePair implements Comparable<FitnessSizePair>, MultiObjectiveIndividual {
-    private double fitness;
-    private int size;
+  private double fitness;
+  private int size;
 
-    public FitnessSizePair(double fitness, int size) {
-      this.fitness = fitness;
-      this.size = size;
-    }
+  public FitnessSizePair(double fitness, int size) {
+    this.fitness = fitness;
+    this.size = size;
+  }
 
-    public double getFitness() {
-      return fitness;
-    }
+  public double getFitness() {
+    return fitness;
+  }
 
-    public int getSize() {
-      return size;
-    }
+  public int getSize() {
+    return size;
+  }
 
   @Override
   public int compareTo(FitnessSizePair o) {
