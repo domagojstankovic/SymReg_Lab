@@ -16,6 +16,7 @@ public class SRInputPanel extends JPanel {
   private JTextField terminalsetTxtFld = null;
   private CheckboxListPanel checkboxPanel = null;
   private JCheckBox linearScalingCheckBox = null;
+  private JCheckBox intervalArtihmeticCheckBox = null;
 
   public SRInputPanel() {
     initGUI();
@@ -38,6 +39,10 @@ public class SRInputPanel extends JPanel {
     // Linear scaling
     JLabel linearScalingLbl = new JLabel("Linear scaling");
     linearScalingCheckBox = new JCheckBox();
+
+    // Interval arithmetic
+    JLabel intervalArithmeticLbl = new JLabel("Interval arithmetic");
+    intervalArtihmeticCheckBox = new JCheckBox();
 
     // Input file
     JLabel inputFileLbl = new JLabel("Input file");
@@ -69,6 +74,7 @@ public class SRInputPanel extends JPanel {
                 .addComponent(functionSetLbl)
                 .addComponent(terminalSetLbl)
                 .addComponent(linearScalingLbl)
+                .addComponent(intervalArithmeticLbl)
                 .addComponent(inputFileLbl)
                 .addComponent(errorWeightsFileLbl)
                 .addComponent(errorMetricLbl)
@@ -76,6 +82,7 @@ public class SRInputPanel extends JPanel {
             .addComponent(checkboxPanel)
             .addComponent(terminalsetTxtFld)
             .addComponent(linearScalingCheckBox)
+            .addComponent(intervalArtihmeticCheckBox)
             .addComponent(inputFileBrowsePnl)
             .addComponent(errorWeightsFileBrowsePnl)
             .addComponent(errorMetricsPanel)
@@ -93,6 +100,9 @@ public class SRInputPanel extends JPanel {
         ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
             .addComponent(linearScalingLbl)
             .addComponent(linearScalingCheckBox)
+        ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+            .addComponent(intervalArithmeticLbl)
+            .addComponent(intervalArtihmeticCheckBox)
         ).addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
             .addComponent(inputFileLbl)
             .addComponent(inputFileBrowsePnl)
@@ -128,5 +138,9 @@ public class SRInputPanel extends JPanel {
 
   public JCheckBox getLinearScalingCheckBox() {
     return linearScalingCheckBox;
+  }
+
+  public JCheckBox getIntervalArtihmeticCheckBox() {
+    return intervalArtihmeticCheckBox;
   }
 }

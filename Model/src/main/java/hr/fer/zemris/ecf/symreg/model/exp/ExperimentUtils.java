@@ -36,6 +36,7 @@ public class ExperimentUtils {
         experimentInput.getInputFile(),
         experimentInput.getFunctions(),
         experimentInput.isLinearScaling(),
+        experimentInput.isIntervalArithmetic(),
         experimentInput.getErrorWeightsFile(),
         experimentInput.getErrorMetric()
     );
@@ -46,12 +47,16 @@ public class ExperimentUtils {
                                           String inputFile,
                                           List<String> functions,
                                           boolean linearScaling,
+                                          boolean intervalArithmetic,
                                           String errorWeightsFile,
                                           String errorMetric) {
 
     List<EntryBlock> genotypes = conf.genotypes.get(0);
     EntryBlock treeGen = genotypes.get(0);
 
+    if (intervalArithmetic) {
+      treeGen.setName("IATree");
+    }
     Entry functionsetEntry = treeGen.getEntryWithKey("functionset");
     Entry terminalsetEntry = treeGen.getEntryWithKey("terminalset");
 

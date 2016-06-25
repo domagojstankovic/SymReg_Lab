@@ -69,9 +69,17 @@ public abstract class AbstractSymReg extends JFrame implements ExperimentInputPr
     String inputFile = panel.getInputFileBrowsePnl().getTextField();
     List<String> functions = panel.getCheckboxPanel().getCheckedItems();
     boolean linearScaling = panel.getLinearScalingCheckBox().isSelected();
+    boolean intervalArithmetic = panel.getIntervalArtihmeticCheckBox().isSelected();
     String errorWeightsFile = panel.getErrorWeightsFileBrowsePnl().getTextField();
     String errorMetric = panel.getErrorMetricsPanel().getSelectedValue();
 
-    return new ExperimentInput(terminalset, inputFile, functions, linearScaling, errorWeightsFile, errorMetric);
+    return new ExperimentInput(
+        terminalset,
+        inputFile,
+        functions,
+        linearScaling,
+        intervalArithmetic,
+        errorWeightsFile,
+        errorMetric);
   }
 }

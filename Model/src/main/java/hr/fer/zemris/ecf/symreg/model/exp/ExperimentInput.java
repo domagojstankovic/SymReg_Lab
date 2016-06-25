@@ -10,6 +10,7 @@ public class ExperimentInput {
   private String inputFile;
   private List<String> functions;
   private boolean linearScaling;
+  private boolean intervalArithmetic;
   private String errorWeightsFile;
   private String errorMetric;
 
@@ -17,12 +18,14 @@ public class ExperimentInput {
                          String inputFile,
                          List<String> functions,
                          boolean linearScaling,
+                         boolean intervalArithmetic,
                          String errorWeightsFile,
                          String errorMetric) {
     this.terminalset = terminalset;
     this.inputFile = inputFile;
     this.functions = functions;
     this.linearScaling = linearScaling;
+    this.intervalArithmetic = intervalArithmetic;
     this.errorWeightsFile = errorWeightsFile;
     this.errorMetric = errorMetric;
   }
@@ -41,6 +44,10 @@ public class ExperimentInput {
 
   public boolean isLinearScaling() {
     return linearScaling;
+  }
+
+  public boolean isIntervalArithmetic() {
+    return intervalArithmetic;
   }
 
   public String getErrorWeightsFile() {
