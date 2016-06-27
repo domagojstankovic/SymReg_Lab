@@ -16,6 +16,8 @@ public class HardcodedFunctionsProvider implements SupportingFunctionsProvider {
     list.add("/");
     list.add("sin");
     list.add("cos");
+    list.add("sqrt");
+    list.add("log");
     return list;
   }
 }

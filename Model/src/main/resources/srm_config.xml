@@ -7,7 +7,7 @@
 
     <Genotype>
         <Tree>
-            <Entry key="maxdepth">5</Entry>
+            <Entry key="maxdepth">7</Entry>
             <Entry key="functionset">sin cos + - / *</Entry>
             <Entry key="terminalset">x1 x2</Entry>
         </Tree>
@@ -20,8 +20,8 @@
         <Entry key="randomizer.seed">0</Entry>
         <Entry key="population.size">500</Entry>
         <Entry key="population.demes">1</Entry>
-        <Entry key="mutation.indprob">0.35</Entry>
-        <Entry key="term.eval">200000</Entry>
+        <Entry key="mutation.indprob">0.3</Entry>
+        <Entry key="term.eval">500000</Entry>
         <Entry key="term.stagnation">50</Entry>
         <Entry key="log.level">3</Entry>
         <Entry key="log.frequency">10</Entry>
