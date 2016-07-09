@@ -6,6 +6,7 @@ import hr.fer.zemris.ecf.lab.engine.console.Job;
 import hr.fer.zemris.ecf.lab.engine.log.LogModel;
 import hr.fer.zemris.ecf.lab.engine.param.Configuration;
 import hr.fer.zemris.ecf.lab.engine.task.JobListener;
+import hr.fer.zemris.ecf.symreg.model.exp.ExperimentInput;
 import hr.fer.zemris.ecf.symreg.model.exp.ExperimentUtils;
 import hr.fer.zemris.ecf.symreg.model.exp.SRManager;
 
@@ -59,7 +60,19 @@ public class TestFrame extends JFrame {
     SRManager manager = getSrManager();
     try {
       Configuration templateConfiguration = SRManager.readTemplateConfiguration();
-      ExperimentUtils.updateConfiguration(templateConfiguration, experimentInputProvider.getExperimentInput());
+      ExperimentInput experimentInput = experimentInputProvider.getExperimentInput();
+
+      // disable interval arithmetic while testing
+      ExperimentInput experimentInput2 = new ExperimentInput(
+          experimentInput.getTerminalset(),
+          experimentInput.getInputFile(),
+          experimentInput.getFunctions(),
+          experimentInput.isLinearScaling(),
+          false,
+          experimentInput.getErrorWeightsFile(),
+          experimentInput.getErrorMetric());
+
+      ExperimentUtils.updateConfiguration(templateConfiguration, experimentInput2);
       ExperimentUtils.anulateBatchRepeats(templateConfiguration);
 
       File confFile = File.createTempFile("srmlab-test-config", ".txt");
